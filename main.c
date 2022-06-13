@@ -1,18 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int main()
+int buildField()
 {
     char line [25][25] = {{'+', '-', '.'}};
     char row [25][25] = {{'|'}};
-    // 0 = no separation line , 1 = separation line 
+    // 0 = no separation line , 1 = separation line
     int separator = 0;
     int i,j;
-    
+
     // row
     for (i = 0; i < 13; i++){
         // indicating the 4 separation lines
-        // no separation 
+        // no separation
         if (i != 0 && i != 4 && i != 8 && i != 12){
             separator = 0;
         }
@@ -20,28 +20,28 @@ int main()
         else
         {
             separator = 1;
-            printf("\n"); 
+            printf("\n");
         }
-                
+
         // line
         for (j = 0; j < 25; j++){
-            // if separation line 
+            // if separation line
             if (separator == 1){
-                // print '+' every 8 character 
+                // print '+' every 8 character
                 if (j == 0 || j == 8 || j == 16 || j == 24){
                     printf("%c ", line[0][0]); // '+'
                 }else{
                     // print '-' in between
                     printf("%c ", line[0][1]); // '-'
-                } 
+                }
             }// end of separator = 1
-            // NO separation line 
+            // NO separation line
             else if (separator == 0)
             {
-                // print the first '|' in a new line 
+                // print the first '|' in a new line
                 j == 0 ? printf("\n%c", row[0][0]) : 0 ; // '|'
-          
-                // print '|' every 8 character 
+
+                // print '|' every 8 character
                 if (j == 8 || j == 16 || j == 24){
                     printf(" %c ", row[0][0]); // '|'
                 }
@@ -54,7 +54,12 @@ int main()
                     printf(" "); // '.'
                 }
             }// end of separator = 0
-        }//end of for line 
+        }//end of for line
     }// end of for (row)
     return 0;
+}
+
+int main()
+{
+    buildField();
 }
