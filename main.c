@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int buildField()
+int printField()
 {
     char line [25][25] = {{'+', '-', '.'}};
     char row [25][25] = {{'|'}};
@@ -56,10 +56,12 @@ int buildField()
             }// end of separator = 0
         }//end of for line
     }// end of for (row)
+
     return 0;
 }
 
 int main()
 {
-    buildField();
+    printField();
+    return 0;
 }
