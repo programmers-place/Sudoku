@@ -1,6 +1,44 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/**
+* Structure for needed input values
+*/
+struct input {
+    int number;
+    int column;
+    int row;
+};
+
+/**
+* Creates the multi-dimensional Array for the field
+*/
+int createField() {
+    char field[9][9];
+    return 0;
+}
+
+/**
+* Adds number to field
+*/
+int addNumber(struct input input) {
+    return 0;
+}
+
+/**
+* Removes number from field
+*/
+int removeNumber(struct input input) {
+    return 0;
+}
+
+/**
+* Updates the field by the given input at demanded place
+*/
+int updateField(struct input input) {
+    return 0;
+}
+
 int printField()
 {
     char line [25][25] = {{'+', '-', '.'}};
