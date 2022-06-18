@@ -21,6 +21,7 @@ int fillField(char field[9][9]) {
             field[i][j] = 0;
         }
     }
+    return 0;
 }
 
 /**
@@ -119,6 +120,6 @@ int printField()
 
 int main()
 {
-    createField();
+    printField();
     return 0;
 }
