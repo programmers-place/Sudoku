@@ -12,10 +12,30 @@ struct input {
 };
 
 /**
+* Fills the field with numbers
+*/
+int fillField(char field[9][9]) {
+    // Fill only 0 for now
+    // TODO: Fill with real Sudoku numbers
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
+            field[i][j] = 0;
+        }
+    }
+    return 0;
+}
+
+/**
 * Creates the multi-dimensional Array for the field
 */
 int createField() {
     char field[9][9];
+    fillField(field);
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
+            printf("%i", field[i][j]);
+        }
+    }
     return 0;
 }
 
