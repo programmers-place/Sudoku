@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <conio.h>
 
 /**
 * Structure for needed input values
@@ -95,7 +96,24 @@ int printField()
         }//end of for line
     }// end of for (row)
 
-    return 0;
+
+        switch(getch()) {
+        case 72:
+            printf("UP\n");
+            break;
+        case 80:
+            printf("DOWN\n");
+            break;
+        case 77:
+            printf("RIGHT\n");
+            break;
+        case 75:
+            printf("LEFT\n");
+            break;
+        }
+
+
+    //return 0;
 }
 
 int main()
