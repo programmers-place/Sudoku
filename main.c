@@ -14,14 +14,14 @@ int printField(int field[9][9]) {
 }
 
 /**
-* Checks if a number already appears in column of field
+* Checks if input number already appears in column of field
 * Returns 1 if number already exists, 0 if not
 */
-int checkColumn(int field[9][9], int number, int column) {
+int checkColumn(int field[9][9], int input, int column) {
     int result = 0;
 
     for (int i = 0; i < 9; i++) {
-        if (field[i][column] == number) {
+        if (field[i][column] == input) {
             result = 1;
         }
     }
@@ -30,14 +30,14 @@ int checkColumn(int field[9][9], int number, int column) {
 }
 
 /**
-* Checks if a number already appears in row of field
+* Checks if input number already appears in row of field
 * Returns 1 if number already exists, 0 if not
 */
-int checkRow(int field[9][9], int number, int row) {
+int checkRow(int field[9][9], int input, int row) {
     int result = 0;
 
     for (int i = 0; i < 9; i++) {
-        if (field[row][i] == number) {
+        if (field[row][i] == input) {
             result = 1;
         }
     }
@@ -186,20 +186,20 @@ int checkAll(int field[9][9], int input, int row, int column) {
     int squareCheck = checkSquare(field, input, row, column);
 
     // Check if input appears in Row
-    if (rowCheck != 0) {
-        printf("\nEine %i existiert bereits in dieser Zeile.", input);
+    if (rowCheck) {
+        printf("\nEine %i existiert bereits in dieser Zeile.\n", input);
         result = 1;
     }
 
     // Check if input appears in Column
-    if (columnCheck != 0) {
-        printf("\nEine %i existiert bereits in dieser Spalte.", input);
+    if (columnCheck) {
+        printf("\nEine %i existiert bereits in dieser Spalte.\n", input);
         result = 1;
     }
 
     // Check if input appears in Square
-    if (squareCheck != 0) {
-        printf("\nEine %i existiert bereits in diesem Block.", input);
+    if (squareCheck) {
+        printf("\nEine %i existiert bereits in diesem Block.\n", input);
         result = 1;
     }
 
@@ -219,7 +219,7 @@ int main()
         k = 1;
     }
     printField(field);
-    checkAll(field, 5, 3, 5);
+    checkAll(field, 5, 1, 1);
 
     return 0;
 }
