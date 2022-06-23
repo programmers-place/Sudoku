@@ -175,10 +175,10 @@ int checkSquare(int field[9][9], int input, int row, int column) {
 }
 
 /**
-* Checks if input number already exists in row, column or square
+* Checks if input number already appears in row, column or square
 * returns 1 if yes and 0 if not
 */
-int checkAll(int field[9][9], int input, int row, int column) {
+int numberAppears(int field[9][9], int input, int row, int column) {
     int result = 0;
 
     int rowCheck = checkRow(field, input, row);
@@ -187,20 +187,25 @@ int checkAll(int field[9][9], int input, int row, int column) {
 
     // Check if input appears in Row
     if (rowCheck) {
-        printf("\nEine %i existiert bereits in dieser Zeile.\n", input);
+        printf("\nEs gibt bereits eine %i in dieser Zeile.", input);
         result = 1;
     }
 
     // Check if input appears in Column
     if (columnCheck) {
-        printf("\nEine %i existiert bereits in dieser Spalte.\n", input);
+        printf("\nEs gibt bereits eine %i in dieser Spalte.", input);
         result = 1;
     }
 
     // Check if input appears in Square
     if (squareCheck) {
-        printf("\nEine %i existiert bereits in diesem Block.\n", input);
+        printf("\nEs gibt bereits eine %i in diesem Block.", input);
         result = 1;
+    }
+
+    // Spacing if something was printed
+    if (result) {
+        printf("\n");
     }
 
     return result;
@@ -218,8 +223,9 @@ int main()
         }
         k = 1;
     }
+
     printField(field);
-    checkAll(field, 5, 1, 1);
+    numberAppears(field, 5, 1, 4);
 
     return 0;
 }
