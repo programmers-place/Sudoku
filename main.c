@@ -15,15 +15,14 @@ int printField(int field[9][9]) {
 
 /**
 * Checks if a number already appears in column of field
-* Returns coordinates if number already exists, {42, 42} if not
+* Returns 1 if number already exists, 0 if not
 */
-int[2] checkColumn(int field[9][9], int number, int column) {
-    int result[2] = {42, 42};
+int checkColumn(int field[9][9], int number, int column) {
+    int result = 0;
 
     for (int i = 0; i < 9; i++) {
         if (field[i][column] == number) {
-            result[0] = i;
-            result[1] = column;
+            result = 1;
         }
     }
 
@@ -32,15 +31,14 @@ int[2] checkColumn(int field[9][9], int number, int column) {
 
 /**
 * Checks if a number already appears in row of field
-* Returns coordinates if number already exists, {42, 42} if not
+* Returns 1 if number already exists, 0 if not
 */
-int[2] checkRow(int field[9][9], int number, int row) {
-    int result[2] = {42, 42};
+int checkRow(int field[9][9], int number, int row) {
+    int result = 0;
 
     for (int i = 0; i < 9; i++) {
         if (field[row][i] == number) {
-            result[0] = row;
-            result[1] = i;
+            result = 1;
         }
     }
 
@@ -84,10 +82,10 @@ int getSquare(int row, int column) {
 
 /**
 * Checks if number already appears in square
-* Returns coordinates if yes and {42, 42} if not
+* Returns 1 if yes and 0 if not
 */
-int[2] checkSquare(int field[9][9], int input, int row, int column) {
-    int result[2] = {42, 42};
+int checkSquare(int field[9][9], int input, int row, int column) {
+    int result = 0;
 
     // We need to know which square to check
     int square = getSquare(row, column);
@@ -168,8 +166,7 @@ int[2] checkSquare(int field[9][9], int input, int row, int column) {
 
             // If cell holds same number that user wants to set, result is set to 1
             if (field[i][j] == input) {
-                result[0] = i;
-                result[1] = j;
+                result = 1;
             }
         }
     }
@@ -184,25 +181,25 @@ int[2] checkSquare(int field[9][9], int input, int row, int column) {
 int checkAll(int field[9][9], int input, int row, int column) {
     int result = 0;
 
-    int rowCheck[2] = checkRow(field, input, row);
-    int columnCheck[2] = checkColumn(field, input, column);
-    int squareCheck[2] = checkSquare(field, input, row, column);
+    int rowCheck = checkRow(field, input, row);
+    int columnCheck = checkColumn(field, input, column);
+    int squareCheck = checkSquare(field, input, row, column);
 
     // Check if input appears in Row
-    if (rowCheck[0] != 42) {
-        printf("\nEine %i existiert bereits in dieser Zeile (%i, %i)", input, rowCheck[0], rowCheck[1]);
+    if (rowCheck != 0) {
+        printf("\nEine %i existiert bereits in dieser Zeile.", input);
         result = 1;
     }
 
     // Check if input appears in Column
-    if (columnCheck[0] != 42) {
-        printf("\nEine %i existiert bereits in dieser Spalte (%i, %i)", input, columnCheck[0], columnCheck[1]);
+    if (columnCheck != 0) {
+        printf("\nEine %i existiert bereits in dieser Spalte.", input);
         result = 1;
     }
 
     // Check if input appears in Square
-    if (squareCheck[0] != 42) {
-        printf("\nEine %i existiert bereits in diesem Block (%i, %i)", input, squareCheck[0], squareCheck[1]);
+    if (squareCheck != 0) {
+        printf("\nEine %i existiert bereits in diesem Block.", input);
         result = 1;
     }
 
