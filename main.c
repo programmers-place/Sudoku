@@ -93,7 +93,7 @@ int checkColumn(int field[9][9], int input, int column) {
     }
 
     return result;
-}
+}// end of checkColumn
 
 /**
 * Checks if input number already appears in row of field
@@ -109,7 +109,7 @@ int checkRow(int field[9][9], int input, int row) {
     }
 
     return result;
-}
+}// end of checkRow
 
 /**
 * Returns in which square of the field the input would be set
@@ -143,7 +143,7 @@ int getSquare(int row, int column) {
     } else {
         return -1; // Won't be needed since rows and columns will be checked before function is called
     }
-}
+}// end of getSquare
 
 
 /**
@@ -165,66 +165,66 @@ int checkSquare(int field[9][9], int input, int row, int column) {
     // Define area of square
     switch (square) {
 
-    // Upper 3 squares
-    case 1:
-        minRow = 0;
-        maxRow = 2;
-        minCol = 0;
-        maxCol = 2;
-        break;
-    case 2:
-        minRow = 0;
-        maxRow = 2;
-        minCol = 3;
-        maxCol = 5;
-        break;
-    case 3:
-        minRow = 0;
-        maxRow = 2;
-        minCol = 6;
-        maxCol = 8;
-        break;
+        // Upper 3 squares
+        case 1:
+            minRow = 0;
+            maxRow = 2;
+            minCol = 0;
+            maxCol = 2;
+            break;
+        case 2:
+            minRow = 0;
+            maxRow = 2;
+            minCol = 3;
+            maxCol = 5;
+            break;
+        case 3:
+            minRow = 0;
+            maxRow = 2;
+            minCol = 6;
+            maxCol = 8;
+            break;
 
-    // Mid 3 squares
-    case 4:
-        minRow = 3;
-        maxRow = 5;
-        minCol = 0;
-        maxCol = 2;
-        break;
-    case 5:
-        minRow = 3;
-        maxRow = 5;
-        minCol = 3;
-        maxCol = 5;
-        break;
-    case 6:
-        minRow = 3;
-        maxRow = 5;
-        minCol = 6;
-        maxCol = 8;
-        break;
+        // Mid 3 squares
+        case 4:
+            minRow = 3;
+            maxRow = 5;
+            minCol = 0;
+            maxCol = 2;
+            break;
+        case 5:
+            minRow = 3;
+            maxRow = 5;
+            minCol = 3;
+            maxCol = 5;
+            break;
+        case 6:
+            minRow = 3;
+            maxRow = 5;
+            minCol = 6;
+            maxCol = 8;
+            break;
 
-    // Lower 3 squares
-    case 7:
-        minRow = 6;
-        maxRow = 8;
-        minCol = 0;
-        maxCol = 2;
-        break;
-    case 8:
-        minRow = 6;
-        maxRow = 8;
-        minCol = 3;
-        maxCol = 5;
-        break;
-    case 9:
-        minRow = 6;
-        maxRow = 8;
-        minCol = 6;
-        maxCol = 8;
-        break;
-    }
+        // Lower 3 squares
+        case 7:
+            minRow = 6;
+            maxRow = 8;
+            minCol = 0;
+            maxCol = 2;
+            break;
+        case 8:
+            minRow = 6;
+            maxRow = 8;
+            minCol = 3;
+            maxCol = 5;
+            break;
+        case 9:
+            minRow = 6;
+            maxRow = 8;
+            minCol = 6;
+            maxCol = 8;
+            break;
+    }// end of switch square
 
     // Now iterate through field array in the accurate limits
     for (int i = minRow; i <= maxRow; i++) {
@@ -238,7 +238,7 @@ int checkSquare(int field[9][9], int input, int row, int column) {
     }
 
     return result;
-}
+}// end of checkSquare
 
 /**
 * Checks if input number already appears in row, column or square
@@ -275,14 +275,15 @@ int numberAppears(int field[9][9], int input, int row, int column) {
     }
 
     return result;
-}
+}// end fo numberAppears
 
 int main()
 {
     int field[9][9];
     // for user input
     int changeRow, changeLine, userValue;
-
+    // for while loop
+    int loop = 1;
     // TODO: outsource in function
     // fill array
     int k = 1;
@@ -298,21 +299,26 @@ int main()
     // first time print for the user
     printField(field);
 
-    // get user input for changing values
-    printf("\n\n______________________________________________  ");
-    printf("\n\nZeile:  ");
-    scanf("%i", &changeRow);
-    printf("\nReihe: ");
-    scanf("%i", &changeLine);
-    printf("\nWert: ");
-    scanf("%i", &userValue);
-    printf("\n______________________________________________  ");
+    while (loop == 1)
+    {
+        // get user input for changing values
+        printf("\n\n______________________________________________  ");
+        printf("\n\nZeile:  ");
+        scanf("%i", &changeRow);
+        printf("\nReihe: ");
+        scanf("%i", &changeLine);
+        printf("\nWert: ");
+        scanf("%i", &userValue);
+        printf("\n______________________________________________  ");
 
-    // change specific spot
-    // added -1 because indexing starts with 1 now == first value is (1/1)
-    field[changeRow-1][changeLine-1] = userValue;
+        // change specific spot
+        // added -1 because indexing starts with 1 now == first value is (1/1)
+        field[changeRow-1][changeLine-1] = userValue;
 
-    printField(field);
+        printField(field);
+        
+    }
+    
 
     return 0;
 }
