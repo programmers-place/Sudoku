@@ -1,7 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-/* prints field
+
+struct userInput
+{
+    int changeRow, changeLine, userValue;
+};
+
+/** prints field
 *
 * @param 2d int array
 * @return 0
@@ -81,7 +88,7 @@ int printArray(int userValue, int changeRow, int changeLine, int field[9][9]) {
 
 /**
 * Checks if input number already appears in column of field
-* Returns 1 if number already exists, 0 if not
+* @return 1 if number already exists, 0 if not
 */
 int checkColumn(int field[9][9], int input, int column) {
     int result = 0;
@@ -97,7 +104,7 @@ int checkColumn(int field[9][9], int input, int column) {
 
 /**
 * Checks if input number already appears in row of field
-* Returns 1 if number already exists, 0 if not
+* @return 1 if number already exists, 0 if not
 */
 int checkRow(int field[9][9], int input, int row) {
     int result = 0;
@@ -113,7 +120,7 @@ int checkRow(int field[9][9], int input, int row) {
 
 /**
 * Returns in which square of the field the input would be set
-* Returns -1 if arguments are invalid (which isn't actually needed in this function, see below)
+* @return -1 if arguments are invalid (which isn't actually needed in this function, see below)
 */
 int getSquare(int row, int column) {
 
@@ -148,7 +155,7 @@ int getSquare(int row, int column) {
 
 /**
 * Checks if number already appears in square
-* Returns 1 if yes and 0 if not
+* @return 1 if yes and 0 if not
 */
 int checkSquare(int field[9][9], int input, int row, int column) {
     int result = 0;
@@ -242,7 +249,7 @@ int checkSquare(int field[9][9], int input, int row, int column) {
 
 /**
 * Checks if input number already appears in row, column or square
-* returns 1 if yes and 0 if not
+* @return 1 if yes and 0 if not
 */
 int numberAppears(int field[9][9], int input, int row, int column) {
     int result = 0;
@@ -277,11 +284,58 @@ int numberAppears(int field[9][9], int input, int row, int column) {
     return result;
 }// end fo numberAppears
 
+
+/** 
+* changes input array
+*   
+* @return 
+**/
+int changeArray(int field[9][9]){
+
+
+    return 0;
+}
+
+
+
+/** 
+* Collects user input 
+*   
+* @return 
+**/
+void getUserInput(struct userInput input){
+    // get user input for changing values
+    printf("\n\n______________________________________________  ");
+
+    // get line / row
+    printf("\n\nZeile:  ");
+    scanf("%i", &input.changeRow);
+
+    // get column
+    printf("\nReihe: ");
+    scanf("%i", &input.changeLine);
+
+    // get value to change 
+    printf("\nWert: ");
+    scanf("%i", &input.userValue);
+
+    printf("\n______________________________________________  ");
+}
+
+
+
 int main()
 {
+    // initialise struct
+    struct userInput input;
+    //getUserInput(input);
     int field[9][9];
+
+    //debug 
+        getUserInput(input);
+    //debug end 
     // for user input
-    int changeRow, changeLine, userValue;
+    //int changeRow, changeLine, userValue;
     // for while loop
     int loop = 1;
     // TODO: outsource in function
@@ -301,8 +355,11 @@ int main()
 
     while (loop == 1)
     {
+
+        // TODO: comments on functions @return and @param
+
         // get user input for changing values
-        printf("\n\n______________________________________________  ");
+       /* printf("\n\n______________________________________________  ");
         printf("\n\nZeile:  ");
         scanf("%i", &changeRow);
         printf("\nReihe: ");
@@ -310,10 +367,10 @@ int main()
         printf("\nWert: ");
         scanf("%i", &userValue);
         printf("\n______________________________________________  ");
-
+*/
         // change specific spot
         // added -1 because indexing starts with 1 now == first value is (1/1)
-        field[changeRow-1][changeLine-1] = userValue;
+        field[input.changeRow-1][input.changeLine-1] = input.userValue;
 
         printField(field);
         
