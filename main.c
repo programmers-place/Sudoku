@@ -3,19 +3,19 @@
 
 /* prints field
 *
-* @param 2d int array 
+* @param 2d int array
 * @return 0
 */
-int printField(int field[9][9]) 
+int printField(int field[9][9])
 {
     // 0 = no separation line , 1 = separation line
     int separator = 0;
-    // defines the first value (row) in  2d array field 
+    // defines the first value (row) in  2d array field
     int y = 0;
     // to make sure y is 0 in the first loop
     int bool = 0;
 
-    // row 
+    // row
     for (int row = 0; row < 13; row++) {
         // indicating the 4 separation lines
         // no separation
@@ -32,7 +32,7 @@ int printField(int field[9][9])
             printf("\n");
         }
 
-        // line 
+        // line
         for (int line = 0; line < 25; line++) {
             // if separation line
             if (separator == 1){
@@ -44,9 +44,9 @@ int printField(int field[9][9])
                     printf("- "); // '-'
                 }
             }// end of separator = 1
-            // NO separation line 
+            // NO separation line
             else if (separator == 0){
-                // print '|' as vertical separator in a new line 
+                // print '|' as vertical separator in a new line
                 line == 0 ? printf("\n|") : 0 ; // '|'
 
                 // print '|' every 8 character
@@ -62,8 +62,8 @@ int printField(int field[9][9])
                 }
 
             }// end of separator = 0
-        }// end of for line 
-    }// end of for row 
+        }// end of for line
+    }// end of for row
     return 0;
 }// end of printField
 
@@ -79,11 +79,208 @@ int printArray(int userValue, int changeRow, int changeLine, int field[9][9]) {
     return 0;
 }
 
+/**
+* Checks if input number already appears in column of field
+* Returns 1 if number already exists, 0 if not
+*/
+int checkColumn(int field[9][9], int input, int column) {
+    int result = 0;
+
+    for (int i = 0; i < 9; i++) {
+        if (field[i][column] == input) {
+            result = 1;
+        }
+    }
+
+    return result;
+}
+
+/**
+* Checks if input number already appears in row of field
+* Returns 1 if number already exists, 0 if not
+*/
+int checkRow(int field[9][9], int input, int row) {
+    int result = 0;
+
+    for (int i = 0; i < 9; i++) {
+        if (field[row][i] == input) {
+            result = 1;
+        }
+    }
+
+    return result;
+}
+
+/**
+* Returns in which square of the field the input would be set
+* Returns -1 if arguments are invalid (which isn't actually needed in this function, see below)
+*/
+int getSquare(int row, int column) {
+
+    // Upper 3 squares
+    if ((row >= 0 && row < 3) && (column >= 0 && column < 3)) {
+        return 1;
+    } else if ((row >= 0 && row < 3) && (column >= 3 && column < 6)) {
+        return 2;
+    } else if ((row >= 0 && row < 3) && (column >= 6 && column < 9)) {
+        return 3;
+
+    // Mid 3 squares
+    } else if ((row >= 3 && row < 6) && (column >= 0 && column < 3)) {
+        return 4;
+    } else if ((row >= 3 && row < 6) && (column >= 3 && column < 6)) {
+        return 5;
+    } else if ((row >= 3 && row < 6) && (column >= 6 && column < 9)) {
+        return 6;
+
+    // Lower 3 squares
+    } else if ((row >= 6 && row < 9) && (column >= 0 && column < 3)) {
+        return 7;
+    } else if ((row >= 6 && row < 9) && (column >= 3 && column < 6)) {
+        return 8;
+    } else if ((row >= 6 && row < 9) && (column >= 6 && column < 9)) {
+        return 9;
+    } else {
+        return -1; // Won't be needed since rows and columns will be checked before function is called
+    }
+}
+
+
+/**
+* Checks if number already appears in square
+* Returns 1 if yes and 0 if not
+*/
+int checkSquare(int field[9][9], int input, int row, int column) {
+    int result = 0;
+
+    // We need to know which square to check
+    int square = getSquare(row, column);
+
+    // Array for the limits of the row and column area (minRow, maxRow, minCol, maxCol)
+    int minRow = 0;
+    int maxRow = 0;
+    int minCol = 0;
+    int maxCol = 0;
+
+    // Define area of square
+    switch (square) {
+
+    // Upper 3 squares
+    case 1:
+        minRow = 0;
+        maxRow = 2;
+        minCol = 0;
+        maxCol = 2;
+        break;
+    case 2:
+        minRow = 0;
+        maxRow = 2;
+        minCol = 3;
+        maxCol = 5;
+        break;
+    case 3:
+        minRow = 0;
+        maxRow = 2;
+        minCol = 6;
+        maxCol = 8;
+        break;
+
+    // Mid 3 squares
+    case 4:
+        minRow = 3;
+        maxRow = 5;
+        minCol = 0;
+        maxCol = 2;
+        break;
+    case 5:
+        minRow = 3;
+        maxRow = 5;
+        minCol = 3;
+        maxCol = 5;
+        break;
+    case 6:
+        minRow = 3;
+        maxRow = 5;
+        minCol = 6;
+        maxCol = 8;
+        break;
+
+    // Lower 3 squares
+    case 7:
+        minRow = 6;
+        maxRow = 8;
+        minCol = 0;
+        maxCol = 2;
+        break;
+    case 8:
+        minRow = 6;
+        maxRow = 8;
+        minCol = 3;
+        maxCol = 5;
+        break;
+    case 9:
+        minRow = 6;
+        maxRow = 8;
+        minCol = 6;
+        maxCol = 8;
+        break;
+    }
+
+    // Now iterate through field array in the accurate limits
+    for (int i = minRow; i <= maxRow; i++) {
+        for (int j = minCol; j <= maxCol; j++) {
+
+            // If cell holds same number that user wants to set, result is set to 1
+            if (field[i][j] == input) {
+                result = 1;
+            }
+        }
+    }
+
+    return result;
+}
+
+/**
+* Checks if input number already appears in row, column or square
+* returns 1 if yes and 0 if not
+*/
+int numberAppears(int field[9][9], int input, int row, int column) {
+    int result = 0;
+
+    int rowCheck = checkRow(field, input, row);
+    int columnCheck = checkColumn(field, input, column);
+    int squareCheck = checkSquare(field, input, row, column);
+
+    // Check if input appears in Row
+    if (rowCheck) {
+        printf("\nEs gibt bereits eine %i in dieser Zeile.", input);
+        result = 1;
+    }
+
+    // Check if input appears in Column
+    if (columnCheck) {
+        printf("\nEs gibt bereits eine %i in dieser Spalte.", input);
+        result = 1;
+    }
+
+    // Check if input appears in Square
+    if (squareCheck) {
+        printf("\nEs gibt bereits eine %i in diesem Block.", input);
+        result = 1;
+    }
+
+    // Spacing if something was printed
+    if (result) {
+        printf("\n");
+    }
+
+    return result;
+}
 
 int main()
 {
     int field[9][9];
-    // for user input 
+    // for user input
     int changeRow, changeLine, userValue;
 
     // TODO: outsource in function
@@ -98,7 +295,7 @@ int main()
         // printf("\n");
         k = 1;
     }
-    // first time print for the user 
+    // first time print for the user
     printField(field);
 
     // get user input for changing values
@@ -110,12 +307,12 @@ int main()
     printf("\nWert: ");
     scanf("%i", &userValue);
     printf("\n______________________________________________  ");
-    
-    // change specific spot 
+
+    // change specific spot
     // added -1 because indexing starts with 1 now == first value is (1/1)
     field[changeRow-1][changeLine-1] = userValue;
 
     printField(field);
-    
+
     return 0;
-}// end of main 
+}
