@@ -5,7 +5,7 @@
 
 struct userInput
 {
-    int changeRow, changeLine, userValue;
+    int changeRow, changeColumn, userValue;
 };
 
 /** prints field
@@ -75,8 +75,8 @@ int printField(int field[9][9])
 }// end of printField
 
 //debug purposes
-int printArray(int userValue, int changeRow, int changeLine, int field[9][9]) {
-    field[changeRow-1][changeLine-1] = userValue;
+int printArray(int userValue, int changeRow, int changeColumn, int field[9][9]) {
+    field[changeRow-1][changeColumn-1] = userValue;
     for (int i = 0; i < 9; i++) {
         for (int j = 0; j < 9; j++) {
             printf("%2i", field[i][j]);
@@ -313,12 +313,17 @@ void getUserInput(struct userInput input){
 
     // get column
     printf("\nReihe: ");
-    scanf("%i", &input.changeLine);
+    scanf("%i", &input.changeColumn);
 
     // get value to change 
     printf("\nWert: ");
     scanf("%i", &input.userValue);
 
+// debug
+printf("\nchange Row: %i", input.changeRow);
+printf("\nchange Line: %i", input.changeColumn);
+printf("\nUser Value: %i", input.userValue);
+// debug end 
     printf("\n______________________________________________  ");
 }
 
@@ -331,11 +336,14 @@ int main()
     //getUserInput(input);
     int field[9][9];
 
-    //debug 
-        getUserInput(input);
-    //debug end 
+
+    getUserInput(input);
+
+    printf("\nchange Row: %i", input.changeRow);
+    printf("\nchange Line: %i", input.changeColumn);
+    printf("\nUser Value: %i", input.userValue);
     // for user input
-    //int changeRow, changeLine, userValue;
+    //int changeRow, changeColumn, userValue;
     // for while loop
     int loop = 1;
     // TODO: outsource in function
@@ -357,20 +365,21 @@ int main()
     {
 
         // TODO: comments on functions @return and @param
-
+        //getUserInput(input);
+        //https://stackoverflow.com/questions/11727383/why-is-this-c-code-giving-me-a-bus-error
         // get user input for changing values
        /* printf("\n\n______________________________________________  ");
         printf("\n\nZeile:  ");
         scanf("%i", &changeRow);
         printf("\nReihe: ");
-        scanf("%i", &changeLine);
+        scanf("%i", &changeColumn);
         printf("\nWert: ");
         scanf("%i", &userValue);
         printf("\n______________________________________________  ");
 */
         // change specific spot
         // added -1 because indexing starts with 1 now == first value is (1/1)
-        field[input.changeRow-1][input.changeLine-1] = input.userValue;
+        field[input.changeRow-1][input.changeColumn-1] = input.userValue;
 
         printField(field);
         
