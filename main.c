@@ -285,10 +285,10 @@ int numberAppears(int field[9][9], int input, int row, int column) {
 }// end fo numberAppears
 
 
-/** 
+/**
 * changes input array
-*   
-* @return 
+*
+* @return
 **/
 int changeArray(int field[9][9]){
 
@@ -298,12 +298,15 @@ int changeArray(int field[9][9]){
 
 
 
-/** 
-* Collects user input 
-*   
-* @return 
+/**
+* Collects user input
+*
+* @return
 **/
-void getUserInput(struct userInput input){
+struct userInput getUserInput(){
+    // define struct variable
+    struct userInput input;
+
     // get user input for changing values
     printf("\n\n______________________________________________  ");
 
@@ -312,36 +315,27 @@ void getUserInput(struct userInput input){
     scanf("%i", &input.changeRow);
 
     // get column
-    printf("\nReihe: ");
+    printf("Spalte: ");
     scanf("%i", &input.changeColumn);
 
-    // get value to change 
-    printf("\nWert: ");
+    // get value to change
+    printf("Wert: ");
     scanf("%i", &input.userValue);
 
-// debug
-printf("\nchange Row: %i", input.changeRow);
-printf("\nchange Line: %i", input.changeColumn);
-printf("\nUser Value: %i", input.userValue);
-// debug end 
-    printf("\n______________________________________________  ");
-}
+    // return userInput
+    return input;
 
+
+// debug end
+    printf("\n______________________________________________");
+}
 
 
 int main()
 {
-    // initialise struct
-    struct userInput input;
-    //getUserInput(input);
+    // declare field
     int field[9][9];
 
-
-    getUserInput(input);
-
-    printf("\nchange Row: %i", input.changeRow);
-    printf("\nchange Line: %i", input.changeColumn);
-    printf("\nUser Value: %i", input.userValue);
     // for user input
     //int changeRow, changeColumn, userValue;
     // for while loop
@@ -361,30 +355,26 @@ int main()
     // first time print for the user
     printField(field);
 
+    struct userInput input;
+
     while (loop == 1)
     {
 
         // TODO: comments on functions @return and @param
-        //getUserInput(input);
+        // initialise struct
+        input = getUserInput();
+
         //https://stackoverflow.com/questions/11727383/why-is-this-c-code-giving-me-a-bus-error
         // get user input for changing values
-       /* printf("\n\n______________________________________________  ");
-        printf("\n\nZeile:  ");
-        scanf("%i", &changeRow);
-        printf("\nReihe: ");
-        scanf("%i", &changeColumn);
-        printf("\nWert: ");
-        scanf("%i", &userValue);
-        printf("\n______________________________________________  ");
-*/
+
         // change specific spot
         // added -1 because indexing starts with 1 now == first value is (1/1)
         field[input.changeRow-1][input.changeColumn-1] = input.userValue;
 
         printField(field);
-        
+
     }
-    
+
 
     return 0;
 }
