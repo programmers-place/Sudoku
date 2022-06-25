@@ -65,8 +65,14 @@ int printField(int field[9][9])
                     //DEBUG
                     //printf("|line = %i| ", line);
                     //printf("|y = %i| ", y);
-                    printf("%4i ", field[y][line]);
+                    if (field[y][line] == 0) {
+                        printf("%4c ", '.');
+                    } else {
+                        printf("%4i ", field[y][line]);
+                    }
+
                 }
+
 
             }// end of separator = 0
         }// end of for line
@@ -340,18 +346,16 @@ int main()
     //int changeRow, changeColumn, userValue;
     // for while loop
     int loop = 1;
+
     // TODO: outsource in function
     // fill array
-    int k = 1;
     for (int i = 0; i < 9; i++) {
         for (int j = 0; j < 9; j++) {
-            field[i][j] = k;
-            // printf("%2i", field[i][j]);
-            k++;
+            field[i][j] = 0;
         }
-        // printf("\n");
-        k = 1;
     }
+
+
     // first time print for the user
     printField(field);
 
@@ -364,17 +368,19 @@ int main()
         // initialise struct
         input = getUserInput();
 
-        //https://stackoverflow.com/questions/11727383/why-is-this-c-code-giving-me-a-bus-error
-        // get user input for changing values
+        if (numberAppears(field, input.userValue, input.changeRow, input.changeColumn)) {
+            continue;
+        } else {
+            //https://stackoverflow.com/questions/11727383/why-is-this-c-code-giving-me-a-bus-error
+            // get user input for changing values
 
-        // change specific spot
-        // added -1 because indexing starts with 1 now == first value is (1/1)
-        field[input.changeRow-1][input.changeColumn-1] = input.userValue;
+            // change specific spot
+            // added -1 because indexing starts with 1 now == first value is (1/1)
+            field[input.changeRow-1][input.changeColumn-1] = input.userValue;
 
-        printField(field);
-
+            printField(field);
+        }
     }
-
 
     return 0;
 }
