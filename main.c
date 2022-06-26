@@ -491,11 +491,14 @@ int main()
     int initialField[9][9];
 
     // Define some Sudokus
-    int easy1[81] = {8, 5, 4, 0, 3, 1, 0, 9, 7, 7, 0, 6, 0, 9, 8, 5, 2, 1, 0, 2, 0, 0, 6, 5, 0, 0, 0, 0, 0, 0, 8, 0, 2, 0, 7, 6, 0, 4, 0, 0, 0, 7, 0, 0, 0, 0, 0, 8, 9, 0, 0, 3, 0, 5, 3, 0, 7, 0, 0, 9, 0, 0, 0, 4, 9, 0, 0, 0, 0, 7, 0, 2, 0, 0, 0, 5, 0, 0, 0, 3, 0};
+    int easy1[81] = {8, 5, 4, 2, 3, 1, 6, 9, 7, 7, 3, 6, 4, 9, 8, 5, 2, 1, 9, 2, 1, 7, 6, 5, 4, 8, 3, 5, 1, 3, 8, 4, 2, 9, 7, 6, 6, 4, 9, 3, 5, 7, 2, 1, 8, 2, 7, 8, 9, 1, 6, 3, 4, 5, 3, 8, 7, 6, 2, 9, 1, 5, 4, 4, 9, 5, 1, 8, 3, 7, 6, 2, 1, 6, 2, 5, 7, 4, 8, 3, 0};
 
     // Fill both fields with the chosen Sudoku
     fillField(initialField, easy1);
     fillField(field, easy1);
+    
+    // start timer 
+    time_t begin = time(NULL);
 
     // First time print for the user
     printField(field, initialField);
@@ -523,6 +526,17 @@ int main()
         }
 
     } while (loop);
+    
+    // stop timer 
+    time_t end = time(NULL);
 
+    // seconds 
+    int seconds = end - begin;
+
+    // calculate into minutes
+    float minutes = seconds / 60.0;
+
+    // calculate elapsed time by finding difference (end - begin)
+    printf("\n\nUnfassbar! Du hast %.2f Sekunden gebraucht", minutes);
     return 0;
 }
