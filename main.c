@@ -18,14 +18,12 @@ struct userInput
     int changeRow, changeColumn, userValue;
 };
 
-/** prints field
-*
-* @param 2d int array
-* @return 0
+/**
+* Prints the field
 */
 int printField(int field[9][9], int initialField[9][9])
 {
-    // Check
+    // Clear last output
     #if __APPLE__
         system("clear");
     #elif __linux__
@@ -34,18 +32,18 @@ int printField(int field[9][9], int initialField[9][9])
         system("cls");
     #endif
 
-    // 0 = no separation line , 1 = separation line
+    // 0 = no separation line, 1 = separation line
     int separator = 0;
     // defines the first value (row) in  2d array field
     int y = 0;
     // to make sure y is 0 in the first loop
     int bool = 0;
 
-    int number = 0;
+    int number = 0; // input number
 
     // row
     for (int row = 0; row < 13; row++) {
-        // indicating the 4 separation lines
+        // indicating the 4 separation line
         // no separation
         if (row != 0 && row != 4 && row != 8 && row != 12){
             separator = 0;
@@ -60,12 +58,12 @@ int printField(int field[9][9], int initialField[9][9])
             printf("\n");
         }
 
-        // line
-        for (int line = 0; line < 25; line++) {
+        // column
+        for (int column = 0; column < 25; column++) {
             // if separation line
             if (separator == 1){
                 // print '+' every 8 character
-                if (line == 0 || line == 8 || line == 16 || line == 24){
+                if (column == 0 || column == 8 || column == 16 || column == 24){
                     printf("+ "); // '+'
                 }else{
                     // print '-' in between
@@ -74,52 +72,86 @@ int printField(int field[9][9], int initialField[9][9])
             }// end of separator = 1
             // NO separation line
             else if (separator == 0){
-                // print '|' as vertical separator in a new line
-                line == 0 ? printf("\n|") : 0 ; // '|'
+                // print '|' as vertical separator in a new column
+                column == 0 ? printf("\n|") : 0 ; // '|'
 
                 // print '|' every 8 character
-                if (line == 3 || line == 6 || line == 9){
+                if (column == 3 || column == 6 || column == 9){
                     printf("|"); // '|'
                 }
 
-                if(line < 9){
-                    if (field[y][line] == 0) {
+                if(column < 9){
+                    if (field[y][column] == 0) {
                         printf("%4c ", '.');
                     } else {
 
-                        number = field[y][line];
-                        field[y][line] = 0;
+                        number = field[y][column];
+                        field[y][column] = 0;
 
-                        if (number == initialField[y][line]) {
+                        if (number == initialField[y][column]) {
                             printf("%4i ", number);
-                        } else if (numberAppears(field, number, y, line, 0)) {
+                        } else if (numberAppears(field, number, y, column, 0)) {
                             printf(ANSI_COLOR_RED "%4i " ANSI_COLOR_RESET, number);
+
                         } else {
                             printf(ANSI_COLOR_CYAN "%4i " ANSI_COLOR_RESET, number);
                         }
 
-                        field[y][line] = number;
+                        field[y][column] = number;
                     }
 
                 }
 
 
             }// end of separator = 0
-        }// end of for line
+        }// end of for column
     }// end of for row
+
     return 0;
 }// end of printField
 
-//debug purposes
-int printArray(int userValue, int changeRow, int changeColumn, int field[9][9]) {
-    field[changeRow-1][changeColumn-1] = userValue;
+/**
+ * Checks if game is finished
+ * @return 1 if yes and 0 if not
+ */
+int isFinished(int field[9][9], int initialField[9][9]) {
+    // If there are no zeros in the Array and no wrong numbers, the Sudoku is finished
+    int zeroCounter = 0; // Counter for all zeros
+    int wrongCounter = 0; // Counter for all wrongly set numbers
+    int isFinished = 0; // Holds the return value
+    int temp = 0; // Temporarily hold value of current cell
+
+    // Iterate through field array
     for (int i = 0; i < 9; i++) {
         for (int j = 0; j < 9; j++) {
-            printf("%2i", field[i][j]);
+
+            // Check if number was a user Input
+            if (field[i][j] == initialField[i][j]) {
+                continue;
+            }
+
+            // Check if number is 0
+            if (field[i][j] == 0) {
+                zeroCounter++;
+            }
+
+            // Check if number is wrong
+            // To do that, we have to take out the value for numberAppears() to work
+            temp = field[i][j];
+            field[i][j] = 0;
+
+            if (numberAppears(field, temp, i, j, 0)) {
+                wrongCounter++;
+            }
         }
-        printf("\n");
     }
-    return 0;
+
+    // If there are no zeros and no wrong numbers, the Sudoku is finished.
+    if (zeroCounter == 0 && wrongCounter == 0) {
+        isFinished = 1;
+    }
+
+    return isFinished;
 }
 
 /**
@@ -352,7 +384,7 @@ struct userInput getUserInput(){
 
     // get user input for changing values
 
-    // get line / row
+    // get column / row
     printf("\n\nZeile:  ");
     scanf("%i", &input.changeRow);
 
@@ -436,33 +468,6 @@ int main()
             printField(field, initialField);
         }
     }
-
-    /*int input = 0;
-    int isCorrect = 0;
-
-    do {
-        fgets(input);
-
-        if (isCorrect) {
-            printf("Input is a number");
-        } else {
-            printf("input is not a number");
-            continue;
-        }
-    } while (isCorrect = 0);
-
-    /*while (i != 1) {
-        printf("\n\nZeile:  ");
-            // if i is integer
-            if (scanf("%d", &i) == 1 ){
-                printf("\nInput is a number");
-                i = 1;
-            }else{
-                printf("\nInput is NOT a number");
-                continue;
-            }
-      }*/
-
 
     return 0;
 }
