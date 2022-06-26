@@ -337,6 +337,23 @@ struct userInput getUserInput(){
 }
 
 
+function Savegame(int field [9][9]) {
+    FILE *f = fopen("file.txt", "w");
+    if (f == NULL) {
+        Printf("Error opening file!\n");
+        exit(1);
+    }
+
+    for (int x = 0; x < 9; x++) {
+        for (int y = 0; y < 9; y++) {
+            fprintf(f, "%d\n", field[x][y]);
+        }
+    }
+
+    fclose(f);
+}
+
+
 int main()
 {
     // declare field
