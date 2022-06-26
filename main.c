@@ -421,7 +421,7 @@ struct userInput getUserInput(){
     input.changeRow = userInput;
 
     // get value to change
-    printf("Wert: ");
+    printf("Wert (0 zum entfernen): ");
     //scanf("%i", &input.userValue);
     scanIsInteger = scanf("%d", &userInput);
     userInput = checkUserInput(scanIsInteger, userInput, 1);
@@ -451,34 +451,64 @@ int fillField(int field[9][9], int sudoku[81]) {
     return 0;
 }
 
-/**
-* Saves field into text file
-* @param 2d array field
-* @return int 0
-*/
-int saveGame(int field [9][9]) {
-    // open file.txt for writing field
-    FILE *f = fopen("file.txt", "w");
+int chooseSudoku(int field[9][9], int initialField[9][9]) {
+    // Define some Sudokus
+    int easy1[81] = {8, 5, 4, 0, 3, 1, 0, 9, 7, 7, 0, 6, 0, 9, 8, 5, 2, 1, 0, 2, 0, 0, 6, 5, 0, 0, 0, 0, 0, 0, 8, 0, 2, 0, 7, 6, 0, 4, 0, 0, 0, 7, 0, 0, 0, 0, 0, 8, 9, 0, 0, 3, 0, 5, 3, 0, 7, 0, 0, 9, 0, 0, 0, 4, 9, 0, 0, 0, 0, 7, 0, 2, 0, 0, 0, 5, 0, 0, 0, 3, 0};
+    int easy2[81] = {0, 0, 0, 7, 0, 0, 0, 0, 0, 7, 2, 0, 0, 0, 9, 0, 5, 1, 8, 9, 1, 0, 2, 6, 0, 7, 0, 9, 0, 3, 2, 0, 0, 0, 6, 8, 6, 8, 0, 1, 0, 0, 3, 4, 2, 2, 5, 4, 0, 0, 0, 0, 0, 0, 0, 0, 9, 3, 1, 0, 6, 8, 0, 0, 0, 0, 9, 5, 0, 0, 0, 4, 0, 3, 0, 6, 7, 0, 0, 1, 0};
+    int medium1[81] = {9, 7, 1, 6, 8, 5, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 7, 1, 0, 0, 0, 0, 0, 2, 9, 0, 0, 6, 0, 2, 3, 8, 0, 6, 0, 0, 0, 6, 8, 0, 0, 0, 0, 5, 0, 2, 0, 3, 0, 0, 0, 0, 0, 0, 7, 4, 0, 7, 2, 6, 0, 0, 0, 1, 0, 6, 5, 0, 0, 7, 9, 0, 0};
+    int medium2[81] = {5, 0, 0, 0, 0, 0, 0, 1, 8, 0, 9, 0, 0, 0, 8, 0, 0, 0, 0, 3, 8, 1, 7, 5, 0, 9, 0, 0, 0, 0, 0, 2, 0, 5, 0, 0, 0, 0, 0, 0, 0, 3, 6, 0, 0, 0, 0, 6, 0, 9, 4, 0, 2, 0, 9, 2, 0, 7, 0, 0, 0, 0, 5, 8, 0, 3, 0, 0, 1, 0, 0, 0, 0, 6, 5, 0, 8, 0, 3, 0, 0};
+    int hard1[81] = {0, 0, 0, 0, 4, 3, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 9, 0, 0, 0, 6, 1, 7, 8, 0, 4, 0, 0, 7, 0, 0, 0, 0, 0, 6, 0, 8, 0, 0, 2, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 8, 6, 0, 0, 7, 0, 0, 0, 0, 3, 0, 3, 2, 0, 1, 0, 0, 0, 7, 0, 1, 0, 3, 8, 6, 0, 0, 4};
+    int hard2[81] = {7, 0, 4, 0, 0, 0, 9, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 5, 4, 0, 0, 8, 0, 2, 6, 0, 4, 0, 0, 5, 0, 0, 0, 3, 0, 9, 0, 9, 0, 0, 8, 0, 0, 7, 0, 0, 0, 0, 1, 0, 0, 5, 0, 0, 0, 8, 0, 0, 7, 0, 0, 0, 0, 2, 0, 0, 0, 2, 1, 0, 0, 0, 8};
 
-    // Error if file can't be opened
-    if (f == NULL) {
-        printf("Error opening file!\n");
-        exit(1);
+    int difficulty = 0;
+
+    printf("Waehlen sie einen Schwierigkeitsgrad: ");
+    printf("\n einfach: 1");
+    printf("\n mittel: 2");
+    printf("\n schwer: 3");
+    printf("\n\n");
+
+    scanf("%i", &difficulty);
+
+    while (!(difficulty >= 1 && difficulty <= 3)) {
+        printf("\nUngueltiger Schwierigkeitsgrad. Erneut eingeben:\n\n");
+        scanf("%i", &difficulty);
     }
 
+    // Random number generator
+    srand(time(NULL));
+    int randomNumber = (rand()%2) + 1; // Zufallszahl
 
-    // print field into file.txt
-    for (int x = 0; x < 9; x++) {
-        for (int y = 0; y < 9; y++) {
-            fprintf(f, "%d\n", field[x][y]);
+    switch (difficulty) {
+    case 1:
+        if (randomNumber == 1) {
+            fillField(field, easy1);
+            fillField(initialField, easy1);
+        } else {
+            fillField(field, easy2);
+            fillField(initialField, easy2);
         }
+        break;
+    case 2:
+        if (randomNumber == 1) {
+            fillField(field, medium1);
+            fillField(initialField, medium1);
+        } else {
+            fillField(field, medium2);
+            fillField(initialField, medium2);
+        }
+        break;
+    case 3:
+        if (randomNumber == 1) {
+            fillField(field, hard1);
+            fillField(initialField, hard1);
+        } else {
+            fillField(field, hard2);
+            fillField(initialField, hard2);
+        }
+        break;
     }
-
-    // Close file.txt
-    fclose(f);
-    return 0;
-} // end of saveGame
-
+}
 
 int main()
 {
@@ -490,12 +520,11 @@ int main()
     // Purpose: We need to know which numbers the player is allowed to change and which he is not
     int initialField[9][9];
 
-    // Define some Sudokus
-    int easy1[81] = {8, 5, 4, 0, 3, 1, 0, 9, 7, 7, 0, 6, 0, 9, 8, 5, 2, 1, 0, 2, 0, 0, 6, 5, 0, 0, 0, 0, 0, 0, 8, 0, 2, 0, 7, 6, 0, 4, 0, 0, 0, 7, 0, 0, 0, 0, 0, 8, 9, 0, 0, 3, 0, 5, 3, 0, 7, 0, 0, 9, 0, 0, 0, 4, 9, 0, 0, 0, 0, 7, 0, 2, 0, 0, 0, 5, 0, 0, 0, 3, 0};
+    // Introduction
+    printf("Willkommen bei Sudoku. ");
 
     // Fill both fields with the chosen Sudoku
-    fillField(initialField, easy1);
-    fillField(field, easy1);
+    chooseSudoku(field, initialField);
 
     // First time print for the user
     printField(field, initialField);
