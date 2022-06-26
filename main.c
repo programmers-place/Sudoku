@@ -348,11 +348,11 @@ int saveGame(int field [9][9]) {
     // Error if file can't be opened
     if (f == NULL) {
         Printf("Error opening file!\n");
-        exit(1);
+        return(0);
     }
 
 
-    // print field into file.txt
+    // Print field into file.txt
     for (int x = 0; x < 9; x++) {
         for (int y = 0; y < 9; y++) {
             fprintf(f, "%d\n", field[x][y]);
@@ -363,6 +363,31 @@ int saveGame(int field [9][9]) {
     fclose(f);
     return 0;
 } // end of saveGame
+
+
+int loadGame() {
+    // Declare field array
+    int field [9][9];
+    FILE *f = fopen("file.txt", "r");
+
+    // Error if file can't be opened
+    if (f == NULL) {
+        Printf("Kein Spielstand vorhanden\n");
+        return(0)
+    }
+    // Read array from file.txt into field
+    for(int x = 0; x < 9; x++) {
+        for(int y = 0; y < 9; y++) {
+            fscanf(f, "%d", field[x] + y);
+        }
+    }
+
+    // Close file.txt
+    fclose(f);
+
+    // Return field with read values from file.txt
+    return field;
+} // end of loadGame
 
 
 int main()
