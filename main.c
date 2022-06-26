@@ -19,148 +19,6 @@ struct userInput
 };
 
 /**
-* Prints the field
-*/
-int printField(int field[9][9], int initialField[9][9])
-{
-    // Clear last output
-    #if __APPLE__
-        system("clear");
-    #elif __linux__
-        system("clear");
-    #elif _WIN32
-        system("cls");
-    #endif
-
-    // 0 = no separation line, 1 = separation line
-    int separator = 0;
-    // defines the first value (row) in  2d array field
-    int y = 0;
-    // to make sure y is 0 in the first loop
-    int bool = 0;
-
-    int number = 0; // input number
-
-    // row
-    for (int row = 0; row < 13; row++) {
-        // indicating the 4 separation line
-        // no separation
-        if (row != 0 && row != 4 && row != 8 && row != 12){
-            separator = 0;
-            if (row < 12 && bool == 1){
-                y = y + 1;
-            }
-            bool = 1;
-        }
-        // separation
-        else{
-            separator = 1;
-            printf("\n");
-        }
-
-        // column
-        for (int column = 0; column < 25; column++) {
-            // if separation line
-            if (separator == 1){
-                // print '+' every 8 character
-                if (column == 0 || column == 8 || column == 16 || column == 24){
-                    printf("+ "); // '+'
-                }else{
-                    // print '-' in between
-                    printf("- "); // '-'
-                }
-            }// end of separator = 1
-            // NO separation line
-            else if (separator == 0){
-                // print '|' as vertical separator in a new column
-                column == 0 ? printf("\n|") : 0 ; // '|'
-
-                // print '|' every 8 character
-                if (column == 3 || column == 6 || column == 9){
-                    printf("|"); // '|'
-                }
-
-                if(column < 9){
-                    if (field[y][column] == 0) {
-                        printf("%4c ", '.');
-                    } else {
-
-                        number = field[y][column];
-                        field[y][column] = 0;
-
-                        if (number == initialField[y][column]) {
-                            printf("%4i ", number);
-                        } else if (numberAppears(field, number, y, column, 0)) {
-                            printf(ANSI_COLOR_RED "%4i " ANSI_COLOR_RESET, number);
-
-                        } else {
-                            printf(ANSI_COLOR_CYAN "%4i " ANSI_COLOR_RESET, number);
-                        }
-
-                        field[y][column] = number;
-                    }
-
-                }
-
-
-            }// end of separator = 0
-        }// end of for column
-    }// end of for row
-
-    return 0;
-}// end of printField
-
-/**
- * Checks if game is finished
- * @return 1 if yes and 0 if not
- */
-int isFinished(int field[9][9], int initialField[9][9]) {
-    // If there are no zeros in the Array and no wrong numbers, the Sudoku is finished
-    int zeroCounter = 0; // Counter for all zeros
-    int wrongCounter = 0; // Counter for all wrongly set numbers
-    int isInitial = 0; // Bool if number was initially from the Sudoku
-    int isFinished = 0; // Holds the return value
-    int temp = 0; // Temporarily hold value of current cell
-
-    // Iterate through field array
-    for (int i = 0; i < 9; i++) {
-        for (int j = 0; j < 9; j++) {
-
-            // Check if number was a user Input
-            if (field[i][j] == initialField[i][j]) {
-                isInitial = 1;
-            }
-
-            // Check if number is 0
-            if (field[i][j] == 0) {
-                zeroCounter++;
-            }
-
-            // Check if number is wrong
-            // To do that, we have to take out the value for numberAppears() to work
-
-            temp = field[i][j];
-            field[i][j] = 0;
-
-            if (isInitial == 0 && numberAppears(field, temp, i, j, 0)) {
-                wrongCounter++;
-            }
-
-            field[i][j] = temp;
-
-            isInitial = 0;
-        }
-    }
-
-    // If there are no zeros and no wrong numbers, the Sudoku is finished.
-    if (zeroCounter == 0 && wrongCounter == 0) {
-        isFinished = 1;
-    }
-
-    return isFinished;
-}
-
-/**
 * Checks if input number already appears in column of field
 * @return 1 if number already exists, 0 if not
 */
@@ -338,7 +196,7 @@ int cellIsUsable(int initialField[9][9], int row, int column) {
 * If print is 1 print errors, if it's zero don't print errors
 * @return 1 if yes and 0 if not
 */
-int numberAppears(int field[9][9], int input, int row, int column, int print) {
+int numberAppears(int field[9][9], int input, int row, int column) {
     int result = 0;
 
     int rowCheck = checkRow(field, input, row);
@@ -347,38 +205,163 @@ int numberAppears(int field[9][9], int input, int row, int column, int print) {
 
     // Check if input appears in Row
     if (rowCheck) {
-        if (print) {
-            printf("\nEs gibt bereits eine %i in dieser Zeile.", input);
-        }
-
         result = 1;
     }
 
     // Check if input appears in Column
     if (columnCheck) {
-        if (print) {
-           printf("\nEs gibt bereits eine %i in dieser Spalte.", input);
-        }
-
         result = 1;
     }
 
     // Check if input appears in Square
     if (squareCheck) {
-        if (print) {
-            printf("\nEs gibt bereits eine %i in diesem Block.", input);
-        }
-
         result = 1;
-    }
-
-    // Spacing if something was printed
-    if (print && result) {
-        printf("\n");
     }
 
     return result;
 }// end of numberAppears
+
+/**
+* Prints the field
+*/
+int printField(int field[9][9], int initialField[9][9])
+{
+    // Clear last output
+    #if __APPLE__
+        system("clear");
+    #elif __linux__
+        system("clear");
+    #elif _WIN32
+        system("cls");
+    #endif
+
+    // 0 = no separation line, 1 = separation line
+    int separator = 0;
+    // defines the first value (row) in  2d array field
+    int y = 0;
+    // to make sure y is 0 in the first loop
+    int bool = 0;
+
+    int number = 0; // input number
+
+    // row
+    for (int row = 0; row < 13; row++) {
+        // indicating the 4 separation line
+        // no separation
+        if (row != 0 && row != 4 && row != 8 && row != 12){
+            separator = 0;
+            if (row < 12 && bool == 1){
+                y = y + 1;
+            }
+            bool = 1;
+        }
+        // separation
+        else{
+            separator = 1;
+            printf("\n");
+        }
+
+        // column
+        for (int column = 0; column < 25; column++) {
+            // if separation line
+            if (separator == 1){
+                // print '+' every 8 character
+                if (column == 0 || column == 8 || column == 16 || column == 24){
+                    printf("+ "); // '+'
+                }else{
+                    // print '-' in between
+                    printf("- "); // '-'
+                }
+            }// end of separator = 1
+            // NO separation line
+            else if (separator == 0){
+                // print '|' as vertical separator in a new column
+                column == 0 ? printf("\n|") : 0 ; // '|'
+
+                // print '|' every 8 character
+                if (column == 3 || column == 6 || column == 9){
+                    printf("|"); // '|'
+                }
+
+                if(column < 9){
+                    if (field[y][column] == 0) {
+                        printf("%4c ", '.');
+                    } else {
+
+                        number = field[y][column];
+                        field[y][column] = 0;
+
+                        if (number == initialField[y][column]) {
+                            printf("%4i ", number);
+                        } else if (numberAppears(field, number, y, column)) {
+                            printf(ANSI_COLOR_RED "%4i " ANSI_COLOR_RESET, number);
+
+                        } else {
+                            printf(ANSI_COLOR_CYAN "%4i " ANSI_COLOR_RESET, number);
+                        }
+
+                        field[y][column] = number;
+                    }
+
+                }
+
+
+            }// end of separator = 0
+        }// end of for column
+    }// end of for row
+
+    return 0;
+}// end of printField
+
+/**
+ * Checks if game is finished
+ * @return 1 if yes and 0 if not
+ */
+int isFinished(int field[9][9], int initialField[9][9]) {
+    // If there are no zeros in the Array and no wrong numbers, the Sudoku is finished
+    int zeroCounter = 0; // Counter for all zeros
+    int wrongCounter = 0; // Counter for all wrongly set numbers
+    int isInitial = 0; // Bool if number was initially from the Sudoku
+    int isFinished = 0; // Holds the return value
+    int temp = 0; // Temporarily hold value of current cell
+
+    // Iterate through field array
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
+
+            // Check if number was a user Input
+            if (field[i][j] == initialField[i][j]) {
+                isInitial = 1;
+            }
+
+            // Check if number is 0
+            if (field[i][j] == 0) {
+                zeroCounter++;
+            }
+
+            // Check if number is wrong
+            // To do that, we have to take out the value for numberAppears() to work
+
+            temp = field[i][j];
+            field[i][j] = 0;
+
+            if (isInitial == 0 && numberAppears(field, temp, i, j)) {
+                wrongCounter++;
+            }
+
+            field[i][j] = temp;
+
+            isInitial = 0;
+        }
+    }
+
+    // If there are no zeros and no wrong numbers, the Sudoku is finished.
+    if (zeroCounter == 0 && wrongCounter == 0) {
+        isFinished = 1;
+    }
+
+    return isFinished;
+}
 
 /**
 * checks if user input is integer
