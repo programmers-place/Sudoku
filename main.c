@@ -381,29 +381,73 @@ int numberAppears(int field[9][9], int input, int row, int column, int print) {
 }// end of numberAppears
 
 /**
+* checks if user input is integer
+* @param int, int, int
+* @return int
+**/
+int checkUserInput(int scanIsInteger, int userInput, int isValue) {
+
+    // input value can be 0, but field range cannot. Therefore the range can differ
+    int minRange = 1; // bottom range
+
+    if (isValue == 1) {
+        minRange = 0;
+    }
+
+    // if input is not an integer
+    while ( scanIsInteger != 1 ){
+        getchar();
+        printf("\nInput ist keine Nummer. Nochmal eingeben: ");
+        scanIsInteger = scanf("%d", &userInput);
+    }
+
+
+    // if input is not between 1 - 9
+    while ( userInput < minRange || userInput > 9){
+        getchar();
+        printf("\nNur Ganzzahlen von %i - 9. Nochmal eingeben: ", minRange);
+        scanIsInteger = scanf("%d", &userInput);
+    }
+    return userInput;
+}// end of checkUserInput
+
+/**
 * Collects user input
-* @return struct userInput
+* @return struct input
 **/
 struct userInput getUserInput(){
-    // define struct variable
+    // initialise struct userInput
     struct userInput input;
 
-    // get user input for changing values
+    // initialise integer for storing input and cheking data type
+    int userInput, scanIsInteger;
 
-    // get column / row
-    printf("\n\nZeile:  ");
-    scanf("%i", &input.changeRow);
+    printf("\n\n_________________________________________________");
 
     // get column
-    printf("Spalte: ");
-    scanf("%i", &input.changeColumn);
+    printf("\n\nSpalte: ");
+    //scanf("%i", &input.changeColumn);
+    scanIsInteger = scanf("%d", &userInput);
+    userInput = checkUserInput(scanIsInteger, userInput, 0);
+    input.changeColumn = userInput;
+
+    // get line / row
+    printf("Zeile:  ");
+    scanIsInteger = scanf("%d", &userInput);
+    userInput = checkUserInput(scanIsInteger, userInput, 0);
+    input.changeRow = userInput;
 
     // get value to change
     printf("Wert: ");
-    scanf("%i", &input.userValue);
+    //scanf("%i", &input.userValue);
+    scanIsInteger = scanf("%d", &userInput);
+    userInput = checkUserInput(scanIsInteger, userInput, 1);
+    input.userValue = userInput;
 
-    // return userInput
+    // return struct userInput
     return input;
+
+    printf("\n______________________________________________");
 }
 
 /**
@@ -435,7 +479,7 @@ int saveGame(int field [9][9]) {
 
     // Error if file can't be opened
     if (f == NULL) {
-        Printf("Error opening file!\n");
+        printf("Error opening file!\n");
         exit(1);
     }
 
