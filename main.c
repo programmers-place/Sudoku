@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <ctype.h>
 
 //TODO: functions like printField() can be void or not | CHECK
 //TODO: Check User Input 
 //TODO: Remove printArray function 
-//TODO: use fillArray 
+//TODO: fillArray 
 
 struct userInput
 {
@@ -15,7 +15,7 @@ struct userInput
 /** prints field
 *
 * @param 2d int array
-* @return 0
+* @return int
 */
 int printField(int field[9][9])
 {
@@ -92,8 +92,8 @@ int printArray(int userValue, int changeRow, int changeColumn, int field[9][9]) 
 
 /**
 * Checks if input number already appears in column of field
-* @param 2d array field, int input, int column
-* @return 1 if number already exists, 0 if not
+* @param 2d array field, int, int 
+* @return int 1 if number already exists, int 0 if not
 */
 int checkColumn(int field[9][9], int input, int column) {
     int result = 0;
@@ -109,8 +109,8 @@ int checkColumn(int field[9][9], int input, int column) {
 
 /**
 * Checks if input number already appears in row of field
-* @param 2d array, int input, int row
-* @return 1 if number already exists, 0 if not
+* @param 2d array, int, int 
+* @return int 1 if number already exists, int 0 if not
 */
 int checkRow(int field[9][9], int input, int row) {
     int result = 0;
@@ -126,8 +126,8 @@ int checkRow(int field[9][9], int input, int row) {
 
 /**
 * Returns in which square of the field the input would be set
-* @param int row, int column
-* @return -1 if arguments are invalid (which isn't actually needed in this function, see below)
+* @param int, int 
+* @return int -1 if arguments are invalid (which isn't actually needed in this function, see below)
 */
 int getSquare(int row, int column) {
 
@@ -162,8 +162,8 @@ int getSquare(int row, int column) {
 
 /**
 * Checks if number already appears in square
-* @param 2d array field, int input, int row, int column
-* @return 1 if yes and 0 if not
+* @param 2d array field, int, int, int 
+* @return int 1 if yes and int 0 if not
 */
 int checkSquare(int field[9][9], int input, int row, int column) {
     int result = 0;
@@ -257,8 +257,8 @@ int checkSquare(int field[9][9], int input, int row, int column) {
 
 /**
 * Checks if input number already appears in row, column or square
-* @param 2d array field, int input, int row, int column
-* @return 1 if yes and 0 if not
+* @param 2d array field, int, int, int
+* @return int 1 if yes and int 0 if not
 */
 int numberAppears(int field[9][9], int input, int row, int column) {
     int result = 0;
@@ -294,11 +294,11 @@ int numberAppears(int field[9][9], int input, int row, int column) {
 }// end fo numberAppears
 
 
-/**
+/** still in process
 * changes input array
 * @param 2d array field 
 * @return 2d array field
-**/
+*
 int fillArray(int field[9][9]){
     
     for (int i = 0; i < 9; i++) {
@@ -309,30 +309,63 @@ int fillArray(int field[9][9]){
 
     return field;
 }
+*/
 
-
+/**
+* checks if user input is integer 
+* @param struct userInput, int, int  
+* @return int  
+**/
+int checkUserInput(struct userInput input, int scanIsInteger, int userInput) {
+    
+    // if input is not an integer
+    while ( scanIsInteger != 1 ){
+        getchar();
+        printf("\nInput ist keine Nummer\nNochmal eingeben: ");
+        scanIsInteger = scanf("%d", &userInput);  
+    }
+    
+    // if input is not between 1 - 9
+    while ( userInput < 0 || userInput > 9){
+        getchar();
+        printf("\nNur Ganzzahlen von 1 - 9\nNochmal eingeben: ");
+        scanIsInteger = scanf("%d", &userInput);  
+    }
+    return userInput;
+}// end of checkUserInput
 
 /**
 * Collects user input
 * @return struct input
 **/
 struct userInput getUserInput(){
-    // define struct variable
+    // initialise struct userInput
     struct userInput input;
+    
+    // initialise integer for storing input and cheking data type
+    int userInput, scanIsInteger;
 
     printf("\n\n______________________________________________  ");
 
     // get line / row
     printf("\n\nZeile:  ");
-    scanf("%i", &input.changeRow);
+    scanIsInteger = scanf("%d", &userInput);
+    userInput = checkUserInput(input, scanIsInteger, userInput);
+    input.changeRow = userInput;
 
     // get column
     printf("Spalte: ");
-    scanf("%i", &input.changeColumn);
+    //scanf("%i", &input.changeColumn);
+    scanIsInteger = scanf("%d", &userInput);
+    userInput = checkUserInput(input, scanIsInteger, userInput);
+    input.changeColumn = userInput;
 
     // get value to change
     printf("Wert: ");
-    scanf("%i", &input.userValue);
+    //scanf("%i", &input.userValue);
+    scanIsInteger = scanf("%d", &userInput);
+    userInput = checkUserInput(input, scanIsInteger, userInput);
+    input.userValue = userInput;
 
     // return struct userInput
     return input;
@@ -340,15 +373,16 @@ struct userInput getUserInput(){
     printf("\n______________________________________________");
 }
 
-
 int main()
 {
     // declare field
     int field[9][9] = {0};
 
-    // for user input
     // for endless while loop
     int loop = 1;
+
+    // initialise struct userInput
+    struct userInput input;
 
     // TODO: outsource in function
     // fill array
@@ -359,15 +393,11 @@ int main()
     }
     //field = fillArray(field);
 
-
     // first time print for the user
     printField(field);
-
-    struct userInput input;
-
+    
     while (loop == 1)
     {
-
         // TODO: comments on functions @return and @param
         // initialise struct
         input = getUserInput();
@@ -381,6 +411,5 @@ int main()
             printField(field);
         }
     }
-
     return 0;
 }
