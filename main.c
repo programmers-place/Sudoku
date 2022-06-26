@@ -20,6 +20,7 @@ struct userInput
 
 /**
 * Checks if input number already appears in column of field
+* @param 2d int array, int, int 
 * @return 1 if number already exists, 0 if not
 */
 int checkColumn(int field[9][9], int input, int column) {
@@ -36,6 +37,7 @@ int checkColumn(int field[9][9], int input, int column) {
 
 /**
 * Checks if input number already appears in row of field
+* @param 2d int array, int, int 
 * @return 1 if number already exists, 0 if not
 */
 int checkRow(int field[9][9], int input, int row) {
@@ -52,6 +54,7 @@ int checkRow(int field[9][9], int input, int row) {
 
 /**
 * Returns in which square of the field the input would be set
+* @param int, int 
 * @return -1 if arguments are invalid (which isn't actually needed in this function, see below)
 */
 int getSquare(int row, int column) {
@@ -87,6 +90,7 @@ int getSquare(int row, int column) {
 
 /**
 * Checks if number already appears in square
+* @param 2d int array, int, int, int, int  
 * @return 1 if yes and 0 if not
 */
 int checkSquare(int field[9][9], int input, int row, int column) {
@@ -181,6 +185,7 @@ int checkSquare(int field[9][9], int input, int row, int column) {
 
 /**
 * Checks if the chosen cell can be altered or if it is fixed
+* @param 2d int array, int, int 
 * @return 1 if cell can be altered, 0 if not
 */
 int cellIsUsable(int initialField[9][9], int row, int column) {
@@ -194,6 +199,7 @@ int cellIsUsable(int initialField[9][9], int row, int column) {
 /**
 * Checks if input number already appears in row, column or square
 * If print is 1 print errors, if it's zero don't print errors
+* @param 2d int array, int, int, int 
 * @return 1 if yes and 0 if not
 */
 int numberAppears(int field[9][9], int input, int row, int column) {
@@ -223,9 +229,10 @@ int numberAppears(int field[9][9], int input, int row, int column) {
 
 /**
 * Prints the field
+* @param 2d int array, 2d int array
+* @return 
 */
-int printField(int field[9][9], int initialField[9][9])
-{
+int printField(int field[9][9], int initialField[9][9]){
     // Clear last output
     #if __APPLE__
         system("clear");
@@ -284,28 +291,29 @@ int printField(int field[9][9], int initialField[9][9])
                 }
 
                 if(column < 9){
+                    // print dot if number is 0  
                     if (field[y][column] == 0) {
                         printf("%4c ", '.');
                     } else {
-
+                        
+                        // save 2d field array into a buffer
                         number = field[y][column];
                         field[y][column] = 0;
 
                         if (number == initialField[y][column]) {
                             printf("%4i ", number);
                         } else if (numberAppears(field, number, y, column)) {
+                            // if input is wrong output is red 
                             printf(ANSI_COLOR_RED "%4i " ANSI_COLOR_RESET, number);
 
                         } else {
+                            // if input is correct output is blue  
                             printf(ANSI_COLOR_CYAN "%4i " ANSI_COLOR_RESET, number);
                         }
 
                         field[y][column] = number;
                     }
-
-                }
-
-
+                }// end if column < 9 
             }// end of separator = 0
         }// end of for column
     }// end of for row
@@ -315,6 +323,7 @@ int printField(int field[9][9], int initialField[9][9])
 
 /**
  * Checks if game is finished
+ * @param 2d int array, 2d int array 
  * @return 1 if yes and 0 if not
  */
 int isFinished(int field[9][9], int initialField[9][9]) {
@@ -340,7 +349,7 @@ int isFinished(int field[9][9], int initialField[9][9]) {
             }
 
             // Check if number is wrong
-            // To do that, we have to take out the value for numberAppears() to work
+            // to do that we have to take out the value for numberAppears() to work
 
             temp = field[i][j];
             field[i][j] = 0;
@@ -364,7 +373,7 @@ int isFinished(int field[9][9], int initialField[9][9]) {
 }
 
 /**
-* checks if user input is integer
+* checks if user input is integer and between 0-9
 * @param int, int, int
 * @return int
 **/
@@ -384,7 +393,6 @@ int checkUserInput(int scanIsInteger, int userInput, int isValue) {
         scanIsInteger = scanf("%d", &userInput);
     }
 
-
     // if input is not between 1 - 9
     while ( userInput < minRange || userInput > 9){
         getchar();
@@ -402,14 +410,13 @@ struct userInput getUserInput(){
     // initialise struct userInput
     struct userInput input;
 
-    // initialise integer for storing input and cheking data type
+    // initialise integer for storing input and checking data type
     int userInput, scanIsInteger;
 
     printf("\n\n_________________________________________________");
 
     // get column
     printf("\n\nSpalte: ");
-    //scanf("%i", &input.changeColumn);
     scanIsInteger = scanf("%d", &userInput);
     userInput = checkUserInput(scanIsInteger, userInput, 0);
     input.changeColumn = userInput;
@@ -422,7 +429,6 @@ struct userInput getUserInput(){
 
     // get value to change
     printf("Wert: ");
-    //scanf("%i", &input.userValue);
     scanIsInteger = scanf("%d", &userInput);
     userInput = checkUserInput(scanIsInteger, userInput, 1);
     input.userValue = userInput;
@@ -435,6 +441,8 @@ struct userInput getUserInput(){
 
 /**
 * Defines the field array as an actual Sudoku game
+* @param 2d int array, int array
+* @return int
 */
 int fillField(int field[9][9], int sudoku[81]) {
 
@@ -451,37 +459,7 @@ int fillField(int field[9][9], int sudoku[81]) {
     return 0;
 }
 
-/**
-* Saves field into text file
-* @param 2d array field
-* @return int 0
-*/
-int saveGame(int field [9][9]) {
-    // open file.txt for writing field
-    FILE *f = fopen("file.txt", "w");
-
-    // Error if file can't be opened
-    if (f == NULL) {
-        printf("Error opening file!\n");
-        exit(1);
-    }
-
-
-    // print field into file.txt
-    for (int x = 0; x < 9; x++) {
-        for (int y = 0; y < 9; y++) {
-            fprintf(f, "%d\n", field[x][y]);
-        }
-    }
-
-    // Close file.txt
-    fclose(f);
-    return 0;
-} // end of saveGame
-
-
-int main()
-{
+int main(){
     struct userInput input; // Declare user input
     int field[9][9]; // Declare field
     int loop = 1; // Variable to decide if game continues
