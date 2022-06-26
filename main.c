@@ -118,6 +118,7 @@ int isFinished(int field[9][9], int initialField[9][9]) {
     // If there are no zeros in the Array and no wrong numbers, the Sudoku is finished
     int zeroCounter = 0; // Counter for all zeros
     int wrongCounter = 0; // Counter for all wrongly set numbers
+    int isInitial = 0; // Bool if number was initially from the Sudoku
     int isFinished = 0; // Holds the return value
     int temp = 0; // Temporarily hold value of current cell
 
@@ -127,7 +128,7 @@ int isFinished(int field[9][9], int initialField[9][9]) {
 
             // Check if number was a user Input
             if (field[i][j] == initialField[i][j]) {
-                continue;
+                isInitial = 1;
             }
 
             // Check if number is 0
@@ -137,12 +138,17 @@ int isFinished(int field[9][9], int initialField[9][9]) {
 
             // Check if number is wrong
             // To do that, we have to take out the value for numberAppears() to work
+
             temp = field[i][j];
             field[i][j] = 0;
 
-            if (numberAppears(field, temp, i, j, 0)) {
+            if (isInitial == 0 && numberAppears(field, temp, i, j, 0)) {
                 wrongCounter++;
             }
+
+            field[i][j] = temp;
+
+            isInitial = 0;
         }
     }
 
@@ -421,53 +427,47 @@ int fillField(int field[9][9], int sudoku[81]) {
 
 int main()
 {
-    // declare field
-    int field[9][9];
+    struct userInput input; // Declare user input
+    int field[9][9]; // Declare field
+    int loop = 1; // Variable to decide if game continues
 
     // We need another field that is the field the player begins with. This field never changes.
     // Purpose: We need to know which numbers the player is allowed to change and which he is not
     int initialField[9][9];
 
-    // define some Sudokus
-    int easy1[81] = {0, 0, 0, 5, 7, 3, 9, 0, 6, 3, 9, 6, 1, 0, 0, 0, 0, 5, 1, 5, 7, 9, 0, 0, 3, 0, 0, 0, 0, 0, 6, 9, 2, 7, 0, 0, 0, 3, 0, 1, 0, 0, 0, 9, 0, 2, 8, 0, 0, 4, 0, 5, 1, 0, 7, 2, 0, 0, 0, 0, 0, 0, 5, 0, 0, 2, 8, 7, 0, 6, 3, 0, 0, 1, 0, 6, 0, 0, 0, 7};
+    // Define some Sudokus
+    int easy1[81] = {8, 5, 4, 0, 3, 1, 0, 9, 7, 7, 0, 6, 0, 9, 8, 5, 2, 1, 0, 2, 0, 0, 6, 5, 0, 0, 0, 0, 0, 0, 8, 0, 2, 0, 7, 6, 0, 4, 0, 0, 0, 7, 0, 0, 0, 0, 0, 8, 9, 0, 0, 3, 0, 5, 3, 0, 7, 0, 0, 9, 0, 0, 0, 4, 9, 0, 0, 0, 0, 7, 0, 2, 0, 0, 0, 5, 0, 0, 0, 3, 0};
 
-    // Fill the initial field
+    // Fill both fields with the chosen Sudoku
     fillField(initialField, easy1);
-    // Fill the field the player will play on
     fillField(field, easy1);
 
-    // for while loop
-    int loop = 1;
-
-    // first time print for the user
+    // First time print for the user
     printField(field, initialField);
 
-    struct userInput input;
 
-    while (loop == 1)
-    {
-        // TODO: comments on functions @return and @param
-        // initialise struct
+
+    do {
+        // Get the user input
         input = getUserInput();
 
         if (!cellIsUsable(initialField, input.changeRow-1, input.changeColumn-1)) {
             printf("Diese Zelle kann nicht veraendert werden.\n");
             continue;
+        } else {
+            // Added - 1 because indexing starts with 1 now == first value is (1/1)
+            field[input.changeRow - 1][input.changeColumn - 1] = input.userValue;
 
-        } /*else if (numberAppears(field, input.userValue, input.changeRow-1, input.changeColumn-1, 1)) {
-            continue;
-
-        }*/ else {
-            //https://stackoverflow.com/questions/11727383/why-is-this-c-code-giving-me-a-bus-error
-            // get user input for changing values
-
-            // change specific spot
-            // added -1 because indexing starts with 1 now == first value is (1/1)
-            field[input.changeRow-1][input.changeColumn-1] = input.userValue;
-
+            // Print field
             printField(field, initialField);
         }
-    }
+
+        if (isFinished(field, initialField)) {
+            printf("\n\nSie haben das Sudoku geloest!");
+            loop = 0;
+        }
+
+    } while (loop);
 
     return 0;
 }
