@@ -2,6 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+//TODO: functions like printField() can be void or not | CHECK
+//TODO: Check User Input 
+//TODO: Remove printArray function 
+//TODO: use fillArray 
 
 struct userInput
 {
@@ -50,30 +54,24 @@ int printField(int field[9][9])
                     // print '-' in between
                     printf("- "); // '-'
                 }
-            }// end of separator = 1
+            }// end of separator == 1
             // NO separation line
             else if (separator == 0){
                 // print '|' as vertical separator in a new line
                 line == 0 ? printf("\n|") : 0 ; // '|'
 
-                // print '|' every 8 character
+                // print '|' after every 3 characters
                 if (line == 3 || line == 6 || line == 9){
                     printf("|"); // '|'
                 }
 
                 if(line < 9){
-                    //DEBUG
-                    //printf("|line = %i| ", line);
-                    //printf("|y = %i| ", y);
                     if (field[y][line] == 0) {
                         printf("%4c ", '.');
                     } else {
                         printf("%4i ", field[y][line]);
                     }
-
                 }
-
-
             }// end of separator = 0
         }// end of for line
     }// end of for row
@@ -94,6 +92,7 @@ int printArray(int userValue, int changeRow, int changeColumn, int field[9][9]) 
 
 /**
 * Checks if input number already appears in column of field
+* @param 2d array field, int input, int column
 * @return 1 if number already exists, 0 if not
 */
 int checkColumn(int field[9][9], int input, int column) {
@@ -110,6 +109,7 @@ int checkColumn(int field[9][9], int input, int column) {
 
 /**
 * Checks if input number already appears in row of field
+* @param 2d array, int input, int row
 * @return 1 if number already exists, 0 if not
 */
 int checkRow(int field[9][9], int input, int row) {
@@ -126,6 +126,7 @@ int checkRow(int field[9][9], int input, int row) {
 
 /**
 * Returns in which square of the field the input would be set
+* @param int row, int column
 * @return -1 if arguments are invalid (which isn't actually needed in this function, see below)
 */
 int getSquare(int row, int column) {
@@ -154,13 +155,14 @@ int getSquare(int row, int column) {
     } else if ((row >= 6 && row < 9) && (column >= 6 && column < 9)) {
         return 9;
     } else {
-        return -1; // Won't be needed since rows and columns will be checked before function is called
+        return -1; // Won't be needed since rows and columns will be checked before function is called (checkSquare())
     }
 }// end of getSquare
 
 
 /**
 * Checks if number already appears in square
+* @param 2d array field, int input, int row, int column
 * @return 1 if yes and 0 if not
 */
 int checkSquare(int field[9][9], int input, int row, int column) {
@@ -255,6 +257,7 @@ int checkSquare(int field[9][9], int input, int row, int column) {
 
 /**
 * Checks if input number already appears in row, column or square
+* @param 2d array field, int input, int row, int column
 * @return 1 if yes and 0 if not
 */
 int numberAppears(int field[9][9], int input, int row, int column) {
@@ -293,27 +296,30 @@ int numberAppears(int field[9][9], int input, int row, int column) {
 
 /**
 * changes input array
-*
-* @return
+* @param 2d array field 
+* @return 2d array field
 **/
-int changeArray(int field[9][9]){
+int fillArray(int field[9][9]){
+    
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
+            field[i][j] = 0;
+        }
+    }
 
-
-    return 0;
+    return field;
 }
 
 
 
 /**
 * Collects user input
-*
-* @return
+* @return struct input
 **/
 struct userInput getUserInput(){
     // define struct variable
     struct userInput input;
 
-    // get user input for changing values
     printf("\n\n______________________________________________  ");
 
     // get line / row
@@ -328,11 +334,9 @@ struct userInput getUserInput(){
     printf("Wert: ");
     scanf("%i", &input.userValue);
 
-    // return userInput
+    // return struct userInput
     return input;
 
-
-// debug end
     printf("\n______________________________________________");
 }
 
@@ -340,11 +344,10 @@ struct userInput getUserInput(){
 int main()
 {
     // declare field
-    int field[9][9];
+    int field[9][9] = {0};
 
     // for user input
-    //int changeRow, changeColumn, userValue;
-    // for while loop
+    // for endless while loop
     int loop = 1;
 
     // TODO: outsource in function
@@ -354,6 +357,7 @@ int main()
             field[i][j] = 0;
         }
     }
+    //field = fillArray(field);
 
 
     // first time print for the user
@@ -368,13 +372,9 @@ int main()
         // initialise struct
         input = getUserInput();
 
-        if (numberAppears(field, input.userValue, input.changeRow, input.changeColumn)) {
+        if (numberAppears(field, input.userValue, input.changeRow - 1 , input.changeColumn - 1)) {
             continue;
         } else {
-            //https://stackoverflow.com/questions/11727383/why-is-this-c-code-giving-me-a-bus-error
-            // get user input for changing values
-
-            // change specific spot
             // added -1 because indexing starts with 1 now == first value is (1/1)
             field[input.changeRow-1][input.changeColumn-1] = input.userValue;
 
