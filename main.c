@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
 
 //TODO: functions like printField() can be void or not | CHECK
 //TODO: Check User Input 
