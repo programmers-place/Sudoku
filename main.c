@@ -336,22 +336,33 @@ struct userInput getUserInput(){
     printf("\n______________________________________________");
 }
 
-
-function Savegame(int field [9][9]) {
+/**
+* Saves field into text file
+* @param 2d array field
+* @return int 0
+*/
+int saveGame(int field [9][9]) {
+    // open file.txt for writing field
     FILE *f = fopen("file.txt", "w");
+
+    // Error if file can't be opened
     if (f == NULL) {
         Printf("Error opening file!\n");
         exit(1);
     }
 
+
+    // print field into file.txt
     for (int x = 0; x < 9; x++) {
         for (int y = 0; y < 9; y++) {
             fprintf(f, "%d\n", field[x][y]);
         }
     }
 
+    // Close file.txt
     fclose(f);
-}
+    return 0;
+} // end of saveGame
 
 
 int main()
