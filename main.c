@@ -90,7 +90,7 @@ int printField(int field[9][9], int initialField[9][9])
 
                         if (number == initialField[y][column]) {
                             printf("%4i ", number);
-                        } else if (numberAppears(field, number, y, column, 0)) {
+                        } else if (numberAppears(field, number, y, column)) {
                             printf(ANSI_COLOR_RED "%4i " ANSI_COLOR_RESET, number);
 
                         } else {
@@ -142,7 +142,7 @@ int isFinished(int field[9][9], int initialField[9][9]) {
             temp = field[i][j];
             field[i][j] = 0;
 
-            if (isInitial == 0 && numberAppears(field, temp, i, j, 0)) {
+            if (isInitial == 0 && numberAppears(field, temp, i, j)) {
                 wrongCounter++;
             }
 
@@ -338,7 +338,7 @@ int cellIsUsable(int initialField[9][9], int row, int column) {
 * If print is 1 print errors, if it's zero don't print errors
 * @return 1 if yes and 0 if not
 */
-int numberAppears(int field[9][9], int input, int row, int column, int print) {
+int numberAppears(int field[9][9], int input, int row, int column) {
     int result = 0;
 
     int rowCheck = checkRow(field, input, row);
@@ -347,34 +347,17 @@ int numberAppears(int field[9][9], int input, int row, int column, int print) {
 
     // Check if input appears in Row
     if (rowCheck) {
-        if (print) {
-            printf("\nEs gibt bereits eine %i in dieser Zeile.", input);
-        }
-
         result = 1;
     }
 
     // Check if input appears in Column
     if (columnCheck) {
-        if (print) {
-           printf("\nEs gibt bereits eine %i in dieser Spalte.", input);
-        }
-
         result = 1;
     }
 
     // Check if input appears in Square
     if (squareCheck) {
-        if (print) {
-            printf("\nEs gibt bereits eine %i in diesem Block.", input);
-        }
-
         result = 1;
-    }
-
-    // Spacing if something was printed
-    if (print && result) {
-        printf("\n");
     }
 
     return result;
