@@ -1,30 +1,49 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
+#include <ctype.h>
 
+#define ANSI_COLOR_RED     "\x1b[31m"
+#define ANSI_COLOR_GREEN   "\x1b[32m"
+#define ANSI_COLOR_YELLOW  "\x1b[33m"
+#define ANSI_COLOR_BLUE    "\x1b[34m"
+#define ANSI_COLOR_MAGENTA "\x1b[35m"
+#define ANSI_COLOR_CYAN    "\x1b[36m"
+#define ANSI_COLOR_RESET   "\x1b[0m"
 
+// Define userInput struct
 struct userInput
 {
     int changeRow, changeColumn, userValue;
 };
 
-/** prints field
-*
-* @param 2d int array
-* @return 0
+/**
+* Prints the field
 */
-int printField(int field[9][9])
+int printField(int field[9][9], int initialField[9][9])
 {
-    // 0 = no separation line , 1 = separation line
+    // Clear last output
+    #if __APPLE__
+        system("clear");
+    #elif __linux__
+        system("clear");
+    #elif _WIN32
+        system("cls");
+    #endif
+
+    // 0 = no separation line, 1 = separation line
     int separator = 0;
     // defines the first value (row) in  2d array field
     int y = 0;
     // to make sure y is 0 in the first loop
     int bool = 0;
 
+    int number = 0; // input number
+
     // row
     for (int row = 0; row < 13; row++) {
-        // indicating the 4 separation lines
+        // indicating the 4 separation line
         // no separation
         if (row != 0 && row != 4 && row != 8 && row != 12){
             separator = 0;
@@ -39,12 +58,12 @@ int printField(int field[9][9])
             printf("\n");
         }
 
-        // line
-        for (int line = 0; line < 25; line++) {
+        // column
+        for (int column = 0; column < 25; column++) {
             // if separation line
             if (separator == 1){
                 // print '+' every 8 character
-                if (line == 0 || line == 8 || line == 16 || line == 24){
+                if (column == 0 || column == 8 || column == 16 || column == 24){
                     printf("+ "); // '+'
                 }else{
                     // print '-' in between
@@ -53,43 +72,92 @@ int printField(int field[9][9])
             }// end of separator = 1
             // NO separation line
             else if (separator == 0){
-                // print '|' as vertical separator in a new line
-                line == 0 ? printf("\n|") : 0 ; // '|'
+                // print '|' as vertical separator in a new column
+                column == 0 ? printf("\n|") : 0 ; // '|'
 
                 // print '|' every 8 character
-                if (line == 3 || line == 6 || line == 9){
+                if (column == 3 || column == 6 || column == 9){
                     printf("|"); // '|'
                 }
 
-                if(line < 9){
-                    //DEBUG
-                    //printf("|line = %i| ", line);
-                    //printf("|y = %i| ", y);
-                    if (field[y][line] == 0) {
+                if(column < 9){
+                    if (field[y][column] == 0) {
                         printf("%4c ", '.');
                     } else {
-                        printf("%4i ", field[y][line]);
+
+                        number = field[y][column];
+                        field[y][column] = 0;
+
+                        if (number == initialField[y][column]) {
+                            printf("%4i ", number);
+                        } else if (numberAppears(field, number, y, column, 0)) {
+                            printf(ANSI_COLOR_RED "%4i " ANSI_COLOR_RESET, number);
+
+                        } else {
+                            printf(ANSI_COLOR_CYAN "%4i " ANSI_COLOR_RESET, number);
+                        }
+
+                        field[y][column] = number;
                     }
 
                 }
 
 
             }// end of separator = 0
-        }// end of for line
+        }// end of for column
     }// end of for row
+
     return 0;
 }// end of printField
 
-//debug purposes
-int printArray(int userValue, int changeRow, int changeColumn, int field[9][9]) {
-    field[changeRow-1][changeColumn-1] = userValue;
+/**
+ * Checks if game is finished
+ * @return 1 if yes and 0 if not
+ */
+int isFinished(int field[9][9], int initialField[9][9]) {
+    // If there are no zeros in the Array and no wrong numbers, the Sudoku is finished
+    int zeroCounter = 0; // Counter for all zeros
+    int wrongCounter = 0; // Counter for all wrongly set numbers
+    int isInitial = 0; // Bool if number was initially from the Sudoku
+    int isFinished = 0; // Holds the return value
+    int temp = 0; // Temporarily hold value of current cell
+
+    // Iterate through field array
     for (int i = 0; i < 9; i++) {
         for (int j = 0; j < 9; j++) {
-            printf("%2i", field[i][j]);
+
+            // Check if number was a user Input
+            if (field[i][j] == initialField[i][j]) {
+                isInitial = 1;
+            }
+
+            // Check if number is 0
+            if (field[i][j] == 0) {
+                zeroCounter++;
+            }
+
+            // Check if number is wrong
+            // To do that, we have to take out the value for numberAppears() to work
+
+            temp = field[i][j];
+            field[i][j] = 0;
+
+            if (isInitial == 0 && numberAppears(field, temp, i, j, 0)) {
+                wrongCounter++;
+            }
+
+            field[i][j] = temp;
+
+            isInitial = 0;
         }
-        printf("\n");
     }
-    return 0;
+
+    // If there are no zeros and no wrong numbers, the Sudoku is finished.
+    if (zeroCounter == 0 && wrongCounter == 0) {
+        isFinished = 1;
+    }
+
+    return isFinished;
 }
 
 /**
@@ -254,10 +322,23 @@ int checkSquare(int field[9][9], int input, int row, int column) {
 }// end of checkSquare
 
 /**
+* Checks if the chosen cell can be altered or if it is fixed
+* @return 1 if cell can be altered, 0 if not
+*/
+int cellIsUsable(int initialField[9][9], int row, int column) {
+    if (initialField[row][column] == 0) {
+        return 1;
+    }
+
+    return 0;
+}
+
+/**
 * Checks if input number already appears in row, column or square
+* If print is 1 print errors, if it's zero don't print errors
 * @return 1 if yes and 0 if not
 */
-int numberAppears(int field[9][9], int input, int row, int column) {
+int numberAppears(int field[9][9], int input, int row, int column, int print) {
     int result = 0;
 
     int rowCheck = checkRow(field, input, row);
@@ -266,74 +347,125 @@ int numberAppears(int field[9][9], int input, int row, int column) {
 
     // Check if input appears in Row
     if (rowCheck) {
-        printf("\nEs gibt bereits eine %i in dieser Zeile.", input);
+        if (print) {
+            printf("\nEs gibt bereits eine %i in dieser Zeile.", input);
+        }
+
         result = 1;
     }
 
     // Check if input appears in Column
     if (columnCheck) {
-        printf("\nEs gibt bereits eine %i in dieser Spalte.", input);
+        if (print) {
+           printf("\nEs gibt bereits eine %i in dieser Spalte.", input);
+        }
+
         result = 1;
     }
 
     // Check if input appears in Square
     if (squareCheck) {
-        printf("\nEs gibt bereits eine %i in diesem Block.", input);
+        if (print) {
+            printf("\nEs gibt bereits eine %i in diesem Block.", input);
+        }
+
         result = 1;
     }
 
     // Spacing if something was printed
-    if (result) {
+    if (print && result) {
         printf("\n");
     }
 
     return result;
-}// end fo numberAppears
-
+}// end of numberAppears
 
 /**
-* changes input array
-*
-* @return
+* checks if user input is integer
+* @param int, int, int
+* @return int
 **/
-int changeArray(int field[9][9]){
+int checkUserInput(int scanIsInteger, int userInput, int isValue) {
+
+    // input value can be 0, but field range cannot. Therefore the range can differ
+    int minRange = 1; // bottom range
+
+    if (isValue == 1) {
+        minRange = 0;
+    }
+
+    // if input is not an integer
+    while ( scanIsInteger != 1 ){
+        getchar();
+        printf("\nInput ist keine Nummer. Nochmal eingeben: ");
+        scanIsInteger = scanf("%d", &userInput);
+    }
 
 
-    return 0;
-}
-
-
+    // if input is not between 1 - 9
+    while ( userInput < minRange || userInput > 9){
+        getchar();
+        printf("\nNur Ganzzahlen von %i - 9. Nochmal eingeben: ", minRange);
+        scanIsInteger = scanf("%d", &userInput);
+    }
+    return userInput;
+}// end of checkUserInput
 
 /**
 * Collects user input
-*
-* @return
+* @return struct input
 **/
 struct userInput getUserInput(){
-    // define struct variable
+    // initialise struct userInput
     struct userInput input;
 
-    // get user input for changing values
-    printf("\n\n______________________________________________  ");
+    // initialise integer for storing input and cheking data type
+    int userInput, scanIsInteger;
 
-    // get line / row
-    printf("\n\nZeile:  ");
-    scanf("%i", &input.changeRow);
+    printf("\n\n_________________________________________________");
 
     // get column
-    printf("Spalte: ");
-    scanf("%i", &input.changeColumn);
+    printf("\n\nSpalte: ");
+    //scanf("%i", &input.changeColumn);
+    scanIsInteger = scanf("%d", &userInput);
+    userInput = checkUserInput(scanIsInteger, userInput, 0);
+    input.changeColumn = userInput;
+
+    // get line / row
+    printf("Zeile:  ");
+    scanIsInteger = scanf("%d", &userInput);
+    userInput = checkUserInput(scanIsInteger, userInput, 0);
+    input.changeRow = userInput;
 
     // get value to change
     printf("Wert: ");
-    scanf("%i", &input.userValue);
+    //scanf("%i", &input.userValue);
+    scanIsInteger = scanf("%d", &userInput);
+    userInput = checkUserInput(scanIsInteger, userInput, 1);
+    input.userValue = userInput;
 
-    // return userInput
+    // return struct userInput
     return input;
 
-
-// debug end
     printf("\n______________________________________________");
+}
+
+/**
+* Defines the field array as an actual Sudoku game
+*/
+int fillField(int field[9][9], int sudoku[81]) {
+
+    int i = 0; // Iterator for loop 1
+    int j = 0; // Iterator for loop 2
+    int sudokuIndex = 0; // Iterator for Sudoku index
+
+    for (i = 0; i < 9; i++) {
+        for (j = 0; j < 9; j++) {
+            field[i][j] = sudoku[sudokuIndex];
+            sudokuIndex++;
+        }
+    }
+    return 0;
 }
 
 /**
@@ -347,12 +479,12 @@ int saveGame(int field [9][9]) {
 
     // Error if file can't be opened
     if (f == NULL) {
-        Printf("Error opening file!\n");
-        return(0);
+        printf("Error opening file!\n");
+        exit(1);
     }
 
 
-    // Print field into file.txt
+    // print field into file.txt
     for (int x = 0; x < 9; x++) {
         for (int y = 0; y < 9; y++) {
             fprintf(f, "%d\n", field[x][y]);
@@ -365,75 +497,49 @@ int saveGame(int field [9][9]) {
 } // end of saveGame
 
 
-int loadGame() {
-    // Declare field array
-    int field [9][9];
-    FILE *f = fopen("file.txt", "r");
-
-    // Error if file can't be opened
-    if (f == NULL) {
-        Printf("Kein Spielstand vorhanden\n");
-        return(0)
-    }
-    // Read array from file.txt into field
-    for(int x = 0; x < 9; x++) {
-        for(int y = 0; y < 9; y++) {
-            fscanf(f, "%d", field[x] + y);
-        }
-    }
-
-    // Close file.txt
-    fclose(f);
-
-    // Return field with read values from file.txt
-    return field;
-} // end of loadGame
-
-
 int main()
 {
-    // declare field
-    int field[9][9];
+    struct userInput input; // Declare user input
+    int field[9][9]; // Declare field
+    int loop = 1; // Variable to decide if game continues
 
-    // for user input
-    //int changeRow, changeColumn, userValue;
-    // for while loop
-    int loop = 1;
+    // We need another field that is the field the player begins with. This field never changes.
+    // Purpose: We need to know which numbers the player is allowed to change and which he is not
+    int initialField[9][9];
 
-    // TODO: outsource in function
-    // fill array
-    for (int i = 0; i < 9; i++) {
-        for (int j = 0; j < 9; j++) {
-            field[i][j] = 0;
-        }
-    }
+    // Define some Sudokus
+    int easy1[81] = {8, 5, 4, 0, 3, 1, 0, 9, 7, 7, 0, 6, 0, 9, 8, 5, 2, 1, 0, 2, 0, 0, 6, 5, 0, 0, 0, 0, 0, 0, 8, 0, 2, 0, 7, 6, 0, 4, 0, 0, 0, 7, 0, 0, 0, 0, 0, 8, 9, 0, 0, 3, 0, 5, 3, 0, 7, 0, 0, 9, 0, 0, 0, 4, 9, 0, 0, 0, 0, 7, 0, 2, 0, 0, 0, 5, 0, 0, 0, 3, 0};
+
+    // Fill both fields with the chosen Sudoku
+    fillField(initialField, easy1);
+    fillField(field, easy1);
+
+    // First time print for the user
+    printField(field, initialField);
 
 
-    // first time print for the user
-    printField(field);
 
-    struct userInput input;
-
-    while (loop == 1)
-    {
-
-        // TODO: comments on functions @return and @param
-        // initialise struct
+    do {
+        // Get the user input
         input = getUserInput();
 
-        if (numberAppears(field, input.userValue, input.changeRow, input.changeColumn)) {
+        if (!cellIsUsable(initialField, input.changeRow-1, input.changeColumn-1)) {
+            printf("Diese Zelle kann nicht veraendert werden.\n");
             continue;
         } else {
-            //https://stackoverflow.com/questions/11727383/why-is-this-c-code-giving-me-a-bus-error
-            // get user input for changing values
+            // Added - 1 because indexing starts with 1 now == first value is (1/1)
+            field[input.changeRow - 1][input.changeColumn - 1] = input.userValue;
 
-            // change specific spot
-            // added -1 because indexing starts with 1 now == first value is (1/1)
-            field[input.changeRow-1][input.changeColumn-1] = input.userValue;
-
-            printField(field);
+            // Print field
+            printField(field, initialField);
         }
-    }
+
+        if (isFinished(field, initialField)) {
+            printf("\n\nSie haben das Sudoku geloest!");
+            loop = 0;
+        }
+
+    } while (loop);
 
     return 0;
 }
