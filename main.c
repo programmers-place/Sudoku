@@ -20,7 +20,7 @@ struct userInput
 
 /**
 * Checks if input number already appears in column of field
-* @param 2d int array, int, int 
+* @param 2d int array, int, int
 * @return 1 if number already exists, 0 if not
 */
 int checkColumn(int field[9][9], int input, int column) {
@@ -37,7 +37,7 @@ int checkColumn(int field[9][9], int input, int column) {
 
 /**
 * Checks if input number already appears in row of field
-* @param 2d int array, int, int 
+* @param 2d int array, int, int
 * @return 1 if number already exists, 0 if not
 */
 int checkRow(int field[9][9], int input, int row) {
@@ -54,7 +54,7 @@ int checkRow(int field[9][9], int input, int row) {
 
 /**
 * Returns in which square of the field the input would be set
-* @param int, int 
+* @param int, int
 * @return -1 if arguments are invalid (which isn't actually needed in this function, see below)
 */
 int getSquare(int row, int column) {
@@ -90,7 +90,7 @@ int getSquare(int row, int column) {
 
 /**
 * Checks if number already appears in square
-* @param 2d int array, int, int, int, int  
+* @param 2d int array, int, int, int, int
 * @return 1 if yes and 0 if not
 */
 int checkSquare(int field[9][9], int input, int row, int column) {
@@ -185,7 +185,7 @@ int checkSquare(int field[9][9], int input, int row, int column) {
 
 /**
 * Checks if the chosen cell can be altered or if it is fixed
-* @param 2d int array, int, int 
+* @param 2d int array, int, int
 * @return 1 if cell can be altered, 0 if not
 */
 int cellIsUsable(int initialField[9][9], int row, int column) {
@@ -199,7 +199,7 @@ int cellIsUsable(int initialField[9][9], int row, int column) {
 /**
 * Checks if input number already appears in row, column or square
 * If print is 1 print errors, if it's zero don't print errors
-* @param 2d int array, int, int, int 
+* @param 2d int array, int, int, int
 * @return 1 if yes and 0 if not
 */
 int numberAppears(int field[9][9], int input, int row, int column) {
@@ -230,7 +230,7 @@ int numberAppears(int field[9][9], int input, int row, int column) {
 /**
 * Prints the field
 * @param 2d int array, 2d int array
-* @return 
+* @return
 */
 int printField(int field[9][9], int initialField[9][9]){
     // Clear last output
@@ -291,11 +291,11 @@ int printField(int field[9][9], int initialField[9][9]){
                 }
 
                 if(column < 9){
-                    // print dot if number is 0  
+                    // print dot if number is 0
                     if (field[y][column] == 0) {
                         printf("%4c ", '.');
                     } else {
-                        
+
                         // save 2d field array into a buffer
                         number = field[y][column];
                         field[y][column] = 0;
@@ -303,17 +303,17 @@ int printField(int field[9][9], int initialField[9][9]){
                         if (number == initialField[y][column]) {
                             printf("%4i ", number);
                         } else if (numberAppears(field, number, y, column)) {
-                            // if input is wrong output is red 
+                            // if input is wrong output is red
                             printf(ANSI_COLOR_RED "%4i " ANSI_COLOR_RESET, number);
 
                         } else {
-                            // if input is correct output is blue  
+                            // if input is correct output is blue
                             printf(ANSI_COLOR_CYAN "%4i " ANSI_COLOR_RESET, number);
                         }
 
                         field[y][column] = number;
                     }
-                }// end if column < 9 
+                }// end if column < 9
             }// end of separator = 0
         }// end of for column
     }// end of for row
@@ -323,7 +323,7 @@ int printField(int field[9][9], int initialField[9][9]){
 
 /**
  * Checks if game is finished
- * @param 2d int array, 2d int array 
+ * @param 2d int array, 2d int array
  * @return 1 if yes and 0 if not
  */
 int isFinished(int field[9][9], int initialField[9][9]) {
@@ -428,7 +428,7 @@ struct userInput getUserInput(){
     input.changeRow = userInput;
 
     // get value to change
-    printf("Wert: ");
+    printf("Wert (0 zum entfernen): ");
     scanIsInteger = scanf("%d", &userInput);
     userInput = checkUserInput(scanIsInteger, userInput, 1);
     input.userValue = userInput;
@@ -459,6 +459,65 @@ int fillField(int field[9][9], int sudoku[81]) {
     return 0;
 }
 
+int chooseSudoku(int field[9][9], int initialField[9][9]) {
+    // Define some Sudokus
+    int easy1[81] = {8, 5, 4, 0, 3, 1, 0, 9, 7, 7, 0, 6, 0, 9, 8, 5, 2, 1, 0, 2, 0, 0, 6, 5, 0, 0, 0, 0, 0, 0, 8, 0, 2, 0, 7, 6, 0, 4, 0, 0, 0, 7, 0, 0, 0, 0, 0, 8, 9, 0, 0, 3, 0, 5, 3, 0, 7, 0, 0, 9, 0, 0, 0, 4, 9, 0, 0, 0, 0, 7, 0, 2, 0, 0, 0, 5, 0, 0, 0, 3, 0};
+    int easy2[81] = {0, 0, 0, 7, 0, 0, 0, 0, 0, 7, 2, 0, 0, 0, 9, 0, 5, 1, 8, 9, 1, 0, 2, 6, 0, 7, 0, 9, 0, 3, 2, 0, 0, 0, 6, 8, 6, 8, 0, 1, 0, 0, 3, 4, 2, 2, 5, 4, 0, 0, 0, 0, 0, 0, 0, 0, 9, 3, 1, 0, 6, 8, 0, 0, 0, 0, 9, 5, 0, 0, 0, 4, 0, 3, 0, 6, 7, 0, 0, 1, 0};
+    int medium1[81] = {9, 7, 1, 6, 8, 5, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 7, 1, 0, 0, 0, 0, 0, 2, 9, 0, 0, 6, 0, 2, 3, 8, 0, 6, 0, 0, 0, 6, 8, 0, 0, 0, 0, 5, 0, 2, 0, 3, 0, 0, 0, 0, 0, 0, 7, 4, 0, 7, 2, 6, 0, 0, 0, 1, 0, 6, 5, 0, 0, 7, 9, 0, 0};
+    int medium2[81] = {5, 0, 0, 0, 0, 0, 0, 1, 8, 0, 9, 0, 0, 0, 8, 0, 0, 0, 0, 3, 8, 1, 7, 5, 0, 9, 0, 0, 0, 0, 0, 2, 0, 5, 0, 0, 0, 0, 0, 0, 0, 3, 6, 0, 0, 0, 0, 6, 0, 9, 4, 0, 2, 0, 9, 2, 0, 7, 0, 0, 0, 0, 5, 8, 0, 3, 0, 0, 1, 0, 0, 0, 0, 6, 5, 0, 8, 0, 3, 0, 0};
+    int hard1[81] = {0, 0, 0, 0, 4, 3, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 9, 0, 0, 0, 6, 1, 7, 8, 0, 4, 0, 0, 7, 0, 0, 0, 0, 0, 6, 0, 8, 0, 0, 2, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 8, 6, 0, 0, 7, 0, 0, 0, 0, 3, 0, 3, 2, 0, 1, 0, 0, 0, 7, 0, 1, 0, 3, 8, 6, 0, 0, 4};
+    int hard2[81] = {7, 0, 4, 0, 0, 0, 9, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 5, 4, 0, 0, 8, 0, 2, 6, 0, 4, 0, 0, 5, 0, 0, 0, 3, 0, 9, 0, 9, 0, 0, 8, 0, 0, 7, 0, 0, 0, 0, 1, 0, 0, 5, 0, 0, 0, 8, 0, 0, 7, 0, 0, 0, 0, 2, 0, 0, 0, 2, 1, 0, 0, 0, 8};
+
+    int difficulty = 0;
+
+    printf("Waehlen sie einen Schwierigkeitsgrad: ");
+    printf("\n einfach: 1");
+    printf("\n mittel: 2");
+    printf("\n schwer: 3");
+    printf("\n\n");
+
+    scanf("%i", &difficulty);
+
+    while (!(difficulty >= 1 && difficulty <= 3)) {
+        printf("\nUngueltiger Schwierigkeitsgrad. Erneut eingeben:\n\n");
+        scanf("%i", &difficulty);
+    }
+
+    // Random number generator
+    srand(time(NULL));
+    int randomNumber = (rand()%2) + 1; // Zufallszahl
+
+    switch (difficulty) {
+    case 1:
+        if (randomNumber == 1) {
+            fillField(field, easy1);
+            fillField(initialField, easy1);
+        } else {
+            fillField(field, easy2);
+            fillField(initialField, easy2);
+        }
+        break;
+    case 2:
+        if (randomNumber == 1) {
+            fillField(field, medium1);
+            fillField(initialField, medium1);
+        } else {
+            fillField(field, medium2);
+            fillField(initialField, medium2);
+        }
+        break;
+    case 3:
+        if (randomNumber == 1) {
+            fillField(field, hard1);
+            fillField(initialField, hard1);
+        } else {
+            fillField(field, hard2);
+            fillField(initialField, hard2);
+        }
+        break;
+    }
+}
+
 int main(){
     struct userInput input; // Declare user input
     int field[9][9]; // Declare field
@@ -468,20 +527,17 @@ int main(){
     // Purpose: We need to know which numbers the player is allowed to change and which he is not
     int initialField[9][9];
 
-    // Define some Sudokus
-    int easy1[81] = {8, 5, 4, 2, 3, 1, 6, 9, 7, 7, 3, 6, 4, 9, 8, 5, 2, 1, 9, 2, 1, 7, 6, 5, 4, 8, 3, 5, 1, 3, 8, 4, 2, 9, 7, 6, 6, 4, 9, 3, 5, 7, 2, 1, 8, 2, 7, 8, 9, 1, 6, 3, 4, 5, 3, 8, 7, 6, 2, 9, 1, 5, 4, 4, 9, 5, 1, 8, 3, 7, 6, 2, 1, 6, 2, 5, 7, 4, 8, 3, 0};
+    // Introduction
+    printf("Willkommen bei Sudoku. ");
 
     // Fill both fields with the chosen Sudoku
-    fillField(initialField, easy1);
-    fillField(field, easy1);
-    
-    // start timer 
+    chooseSudoku(field, initialField);
+
+    // start timer
     time_t begin = time(NULL);
 
     // First time print for the user
     printField(field, initialField);
-
-
 
     do {
         // Get the user input
@@ -504,11 +560,11 @@ int main(){
         }
 
     } while (loop);
-    
-    // stop timer 
+
+    // stop timer
     time_t end = time(NULL);
 
-    // seconds 
+    // seconds
     int seconds = end - begin;
 
     // calculate into minutes
